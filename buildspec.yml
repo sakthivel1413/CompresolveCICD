@@ -1,0 +1,38 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    commands:
+      - echo "Installing dependencies..."
+      - python -m pip install --upgrade pip
+      - pip install -r requirements.txt
+
+  pre_build:
+    commands:
+      - echo "Running Django checks..."
+      - python manage.py check --deploy 2>&1 || true
+
+  build:
+    commands:
+      - echo "Running tests..."
+      - python manage.py test --verbosity=2
+      - echo "Collecting static files..."
+      - python manage.py collectstatic --noinput
+
+  post_build:
+    commands:
+      - echo "Build complete. Packaging artifact..."
+
+artifacts:
+  files:
+    - manage.py
+    - requirements.txt
+    - Procfile
+    - CompResolve/**/*
+    - Complaints_App/**/*
+    - .ebextensions/**/*
+    - .platform/**/*
+    - staticfiles/**/*
+  discard-paths: no

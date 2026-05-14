@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>User Complaint Dashboard</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased">
+    <div class="relative flex min-h-screen w-full flex-row overflow-hidden">
+        <aside
+            class="hidden lg:flex flex-col w-72 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shrink-0 h-screen sticky top-0 overflow-y-auto z-20">
+            <div class="flex items-center gap-3 px-6 py-6 border-b border-slate-100 dark:border-slate-800">
+                <div class="bg-primary/10 flex items-center justify-center rounded-lg size-10 text-primary">
+                    <span class="material-symbols-outlined text-2xl">token</span>
+                </div>
+                <div class="flex flex-col">
+                    <h1 class="text-slate-900 dark:text-white text-base font-bold leading-tight">CompResolve</h1>
+                    <p class="text-slate-500 dark:text-slate-400 text-xs font-normal">User Dashboard</p>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2 p-4">
+                <a
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary group transition-colors">
+                    <span class="material-symbols-outlined text-[20px] font-medium" data-weight="fill">dashboard</span>
+                    <span class="text-sm font-semibold">Dashboard</span>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+                    href="{% url 'track_complaints' %}">
+                    <span class="material-symbols-outlined text-[20px]">confirmation_number</span>
+                    <span class="text-sm font-medium">Tickets</span>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+                    href="{% url 'user_transactions' %}">
+                    <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+                    <span class="text-sm font-medium">Transactions</span>
+                </a>
+                <!--a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">history</span>
+<span class="text-sm font-medium">History</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="text-sm font-medium">Notifications</span>
+<span class="ml-auto bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded-full">1</span>
+</a-->
+            </div>
+
+            <!-- Advertiser Widget -->
+            <div class="px-4 py-2 mt-2 mb-2">
+                <a href="{% url 'register_complaint' %}"
+                    class="block relative overflow-hidden rounded-xl bg-gradient-to-br from-primary to-blue-600 text-white shadow-lg h-36 group cursor-pointer transition-transform hover:scale-[1.02]">
+                    <!-- Slide 1: Audio -->
+                    <div class="ad-slide absolute inset-0 p-4 flex flex-col items-center justify-center text-center transition-opacity duration-1000 opacity-100"
+                        id="ad-slide-1">
+                        <span class="material-symbols-outlined text-3xl mb-1">mic</span>
+                        <h3 class="font-bold text-sm">Voice Complaints</h3>
+                        <p class="text-[10px] mt-1 opacity-90 leading-tight">Record your grievance instantly with a
+                            simple click.</p>
+                    </div>
+                    <!-- Slide 2: Image/Video -->
+                    <div class="ad-slide absolute inset-0 p-4 flex flex-col items-center justify-center text-center transition-opacity duration-1000 opacity-0"
+                        id="ad-slide-2">
+                        <span class="material-symbols-outlined text-3xl mb-1">videocam</span>
+                        <h3 class="font-bold text-sm">Visual Evidence</h3>
+                        <p class="text-[10px] mt-1 opacity-90 leading-tight">Upload images or videos to support your
+                            claim.</p>
+                    </div>
+                    <!-- Slide 3: Insurance -->
+                    <div class="ad-slide absolute inset-0 p-4 flex flex-col items-center justify-center text-center transition-opacity duration-1000 opacity-0"
+                        id="ad-slide-3">
+                        <span class="material-symbols-outlined text-3xl mb-1">verified_user</span>
+                        <h3 class="font-bold text-sm">Insurance Claims</h3>
+                        <p class="text-[10px] mt-1 opacity-90 leading-tight">Seamlessly process insurance claims
+                            directly.</p>
+                    </div>
+
+                    <!-- Indicators -->
+                    <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1 z-10">
+                        <span class="h-1.5 w-1.5 rounded-full bg-white transition-all" id="ad-dot-1"></span>
+                        <span class="h-1.5 w-1.5 rounded-full bg-white/40 transition-all" id="ad-dot-2"></span>
+                        <span class="h-1.5 w-1.5 rounded-full bg-white/40 transition-all" id="ad-dot-3"></span>
+                    </div>
+                </a>
+                <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        let currentSlide = 1;
+                        const totalSlides = 3;
+                        setInterval(() => {
+                            // Current elements
+                            const currSlideEl = document.getElementById(`ad-slide-${currentSlide}`);
+                            const currDotEl = document.getElementById(`ad-dot-${currentSlide}`);
+
+                            // Hide current
+                            currSlideEl.classList.remove('opacity-100');
+                            currSlideEl.classList.add('opacity-0');
+                            currDotEl.classList.remove('bg-white');
+                            currDotEl.classList.add('bg-white/40');
+
+                            // Next index
+                            currentSlide = (currentSlide % totalSlides) + 1;
+
+                            // Next elements
+                            const nextSlideEl = document.getElementById(`ad-slide-${currentSlide}`);
+                            const nextDotEl = document.getElementById(`ad-dot-${currentSlide}`);
+
+                            // Show next
+                            nextSlideEl.classList.remove('opacity-0');
+                            nextSlideEl.classList.add('opacity-100');
+                            nextDotEl.classList.remove('bg-white/40');
+                            nextDotEl.classList.add('bg-white');
+                        }, 5000);
+                    });
+                </script>
+            </div>
+
+            <div class="mt-auto flex flex-col gap-2 p-4 border-t border-slate-100 dark:border-slate-800">
+                <!-- Profile trigger -->
+                <div class="relative" id="profileMenuWrapper">
+                    <!-- Profile trigger -->
+                    <button type="button" onclick="toggleProfileMenu()"
+                        class="w-full flex items-center gap-3 px-3 py-3 mt-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+
+                        <!-- Avatar -->
+                        <div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border border-slate-200 flex items-center justify-center bg-primary text-white font-bold shrink-0"
+                            data-alt="Profile picture of the user">
+                            {{ request.user.name|capfirst|slice:":1" }}
+                        </div>
+
+                        <!-- User info -->
+                        <div class="flex flex-col text-left overflow-hidden">
+                            <span class="text-sm font-semibold text-slate-900 dark:text-white truncate">
+                                {{ request.user.name|capfirst }} ({{ request.user.groups.0|title|default:"Customer" }})
+                            </span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 truncate">
+                                {{ request.user.email }}
+                            </span>
+                        </div>
+
+                        <!-- Chevron -->
+                        <span class="material-symbols-outlined ml-auto text-slate-400">
+                            expand_more
+                        </span>
+                    </button>
+
+                    <!-- 🔥 Dropdown opens UP (not down) -->
+                    <div id="profileMenu"
+                        class="absolute bottom-full mb-2 right-0 w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl hidden z-50">
+
+                        <a href="{% url 'logout' %}"
+                            class="flex items-center gap-2 px-4 py-3 text-sm text-red-600 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition">
+                            <span class="material-symbols-outlined text-[18px]">logout</span>
+                            Logout
+                        </a>
+                    </div>
+                </div>
+                <script>
+                    function toggleProfileMenu() {
+                        document.getElementById('profileMenu').classList.toggle('hidden');
+                    }
+
+                    document.addEventListener('click', function (e) {
+                        const wrapper = document.getElementById('profileMenuWrapper');
+                        const menu = document.getElementById('profileMenu');
+
+                        if (!wrapper.contains(e.target)) {
+                            menu.classList.add('hidden');
+                        }
+                    });
+                </script>
+
+            </div>
+        </aside>
+        <main class="flex-1 flex flex-col min-w-0 overflow-y-auto h-screen">
+            <div
+                class="lg:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">grid_view</span>
+                    <h1 class="font-bold text-lg">CompResolve</h1>
+                </div>
+                <button class="text-slate-500">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+            </div>
+            <div class="flex flex-col gap-8 p-4 md:p-8 lg:p-10 max-w-7xl mx-auto w-full">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex flex-col gap-1">
+                        <h2 class="text-slate-900 dark:text-white text-2xl md:text-3xl font-bold tracking-tight">Hello
+                            {{ request.user.name|capfirst }},</h2>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm md:text-base">Track the status of your
+                            registered tickets below.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <!--button class="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-200 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm">
+                    <span class="material-symbols-outlined text-[20px]">help_center</span>
+                    <span class="hidden sm:inline">Help Guide</span>
+                </button-->
+                        <a href="{% url 'register_complaint' %}"
+                            class="flex items-center gap-2 px-4 py-2.5 bg-primary hover:bg-blue-600 text-white rounded-lg text-sm font-semibold shadow-md shadow-blue-500/20 transition-all active:scale-95">
+                            <span class="material-symbols-outlined text-[20px]">add</span>
+                            <span>Register New Complaint</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Stats Overview -->
+                <!-- Stats Overview -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Pie Chart -->
+                    <div
+                        class="col-span-1 sm:col-span-2 lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center sm:justify-start">
+                        <div class="flex flex-col sm:flex-row items-center gap-8 md:gap-12 w-full sm:pl-4">
+                            <div class="relative size-32 shrink-0 rounded-full shadow-inner" id="pie-chart-container"
+                                style="background: conic-gradient(#ef4444 0deg 31deg, #f59e0b 31deg 313deg, #10b981 313deg 360deg);">
+                                <div
+                                    class="absolute inset-4 bg-white dark:bg-slate-800 rounded-full flex flex-col items-center justify-center z-10 shadow-sm">
+                                    <span
+                                        class="text-3xl font-bold text-slate-900 dark:text-white leading-none">{{total_complaints}}</span>
+                                    <span class="text-[10px] text-slate-400 font-bold uppercase mt-1">Total</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-3 w-full max-w-xs">
+                                <div class="flex items-center justify-between w-full">
+                                    <div class="flex items-center gap-2.5">
+                                        <div
+                                            class="size-3 rounded-full bg-red-500 ring-2 ring-red-100 dark:ring-red-900/30">
+                                        </div>
+                                        <span
+                                            class="text-sm font-semibold text-slate-700 dark:text-slate-200">Pending</span>
+                                    </div>
+                                    <span
+                                        class="text-sm font-bold text-slate-900 dark:text-white opacity-60">{{open_pending_count}}</span>
+                                </div>
+                                <div class="flex items-center justify-between w-full">
+                                    <div class="flex items-center gap-2.5">
+                                        <div
+                                            class="size-3 rounded-full bg-amber-500 ring-2 ring-amber-100 dark:ring-amber-900/30">
+                                        </div>
+                                        <span class="text-sm font-semibold text-slate-700 dark:text-slate-200">In
+                                            Progress</span>
+                                    </div>
+                                    <span
+                                        class="text-sm font-bold text-slate-900 dark:text-white opacity-60">{{in_progress_count}}</span>
+                                </div>
+                                <div class="flex items-center justify-between w-full">
+                                    <div class="flex items-center gap-2.5">
+                                        <div
+                                            class="size-3 rounded-full bg-emerald-500 ring-2 ring-emerald-100 dark:ring-emerald-900/30">
+                                        </div>
+                                        <span
+                                            class="text-sm font-semibold text-slate-700 dark:text-slate-200">Resolved</span>
+                                    </div>
+                                    <span
+                                        class="text-sm font-bold text-slate-900 dark:text-white opacity-60">{{closed_resolved_count}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Complaints -->
+                    <!-- Total Complaints -->
+                    <a href="{% url 'track_complaints' %}"
+                        class="block bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between gap-4 h-full hover:ring-2 hover:ring-primary/50 transition-all">
+                        <div class="flex items-center justify-between">
+                            <p class="text-slate-500 dark:text-slate-400 text-xs font-bold tracking-wider">Total
+                                Complaints</p>
+                            <span
+                                class="bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 p-2 rounded-lg material-symbols-outlined text-[24px]">folder</span>
+                        </div>
+                        <div>
+                            <p class="text-4xl font-bold text-slate-900 dark:text-white mb-1">{{total_complaints}}</p>
+                            <div class="flex items-center gap-1">
+                                <span class="text-slate-400 dark:text-slate-500 text-xs font-bold ">Lifetime
+                                    total</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Open / Pending -->
+                    <!-- Open / Pending -->
+                    <a href="{% url 'track_complaints' %}?filter=pending"
+                        class="block bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between gap-4 h-full hover:ring-2 hover:ring-red-500/50 transition-all group">
+                        <div class="flex items-center justify-between">
+                            <p class="text-slate-500 dark:text-slate-400 text-xs font-bold  tracking-wider">Pending -
+                                FYA</p>
+                            <span
+                                class="bg-red-50 dark:bg-red-900/20 text-red-500 p-2 rounded-lg material-symbols-outlined text-[24px]">error</span>
+                        </div>
+                        <div>
+                            {% if open_pending_count == 0 %}
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="material-symbols-outlined text-green-500 text-2xl">check_circle</span>
+                                <p class="text-lg font-bold text-green-600 dark:text-green-400 leading-tight">No task
+                                    pending from your end</p>
+                            </div>
+                            <span class="text-slate-400 dark:text-slate-500 text-xs font-bold">You are all caught
+                                up!</span>
+                            {% else %}
+                            <p class="text-4xl font-bold text-slate-900 dark:text-white mb-1">{{open_pending_count}}</p>
+                            <div class="flex items-center gap-1.5">
+                                <span
+                                    class="material-symbols-outlined text-[16px] text-red-500 font-bold">priority_high</span>
+                                <span class="text-red-500 text-xs font-bold uppercase">Action Required</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </a>
+                </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const openPendingCount = Number("{{ open_pending_count|default:0 }}");
+    const inProgressCount = Number("{{ in_progress_count|default:0 }}");
+    const resolvedCount = Number("{{ closed_resolved_count|default:0 }}");
+    const totalComplaints = Number("{{ total_complaints|default:0 }}");
+
+    if (totalComplaints > 0) {
+        const openPendingDeg = (openPendingCount / totalComplaints) * 360;
+        const inProgressDeg = (inProgressCount / totalComplaints) * 360;
+        const resolvedDeg = 360 - (openPendingDeg + inProgressDeg);
+
+        const pieChartContainer = document.getElementById('pie-chart-container');
+
+        pieChartContainer.style.background = `
+            conic-gradient(
+                #ef4444 0deg ${openPendingDeg}deg,
+                #f59e0b ${openPendingDeg}deg ${openPendingDeg + inProgressDeg}deg,
+                #10b981 ${openPendingDeg + inProgressDeg}deg 360deg
+            )
+        `;
+    } else {
+        document.getElementById('pie-chart-container').style.background = '#e5e7eb';
+    }
+});
+</script>
+
+
+                <!-- View all div -->
+                <hr>
+                <div class="flex flex-col gap-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Recent Tickets</h3>
+                        <div class="relative group">
+
+                            <a class="text-sm font-semibold text-primary hover:text-primary-dark"
+                                href="{% url 'track_complaints' %}">View All</a>
+                        </div>
+                    </div>
+                </div>
+                {% if total_complaints == 0 %}
+                <div
+                    class="flex flex-col items-center justify-center p-12 text-center bg-white dark:bg-slate-800 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 shadow-sm min-h-[400px]">
+                    <div class="mb-6 bg-slate-50 dark:bg-slate-700/50 p-6 rounded-full">
+                        <span
+                            class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-6xl">content_paste_off</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">No past complaints found</h3>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm max-w-sm mx-auto mb-6">
+                        It looks like you haven't submitted any complaints yet. If you're experiencing an issue, we're
+                        here to help.
+                    </p>
+                    <a class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-blue-600 text-white rounded-lg text-sm font-semibold shadow-md shadow-blue-500/20 transition-all active:scale-95 group"
+                        href="#">
+                        <span class="material-symbols-outlined text-[20px]">add_circle</span>
+                        <span>Register a Complaint</span>
+                    </a>
+                </div>
+                {% endif %}
+
+
+                <!-- Complaints Grid (Recent Complaints) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for complaint in 3comp %}
+                    <div
+                        class="group bg-white dark:bg-card-dark rounded-xl border border-[#dbe0e6] dark:border-gray-700 p-5 hover:shadow-lg hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 flex flex-col cursor-pointer relative overflow-hidden">
+                        <div
+                            class="absolute top-0 left-0 w-1 h-full bg-blue-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                        </div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-xs text-[#617589] dark:text-gray-400 font-medium mb-0.5">Complaint ID</p>
+                                <p class="text-[#111418] dark:text-white text-base font-bold">{{ complaint.ComplaintId}}
+                                </p>
+                            </div>
+                            <!-- Status Badge -->
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold
+                    {% if complaint.Status|lower == 'in progress' %} bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300
+                    {% elif complaint.Status|lower == 'resolved' %} bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300
+                    {% elif complaint.Status|lower == 'closed' %} bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300
+                    {% elif complaint.Status|lower == 'pending' %} bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300
+                    {% endif %}">
+                                <span class="w-1.5 h-1.5 rounded-full
+                        {% if complaint.Status|lower == 'in progress' %} bg-blue-500
+                        {% elif complaint.Status|lower == 'resolved' %} bg-green-500
+                        {% elif complaint.Status|lower == 'closed' %} bg-green-500
+                        {% elif complaint.Status|lower == 'pending' %} bg-orange-500
+                        {% endif %}">
+                                </span>
+                                {{ complaint.Status }}
+                            </span>
+                        </div>
+                        <div class="flex-1 mb-5">
+                            <h3
+                                class="text-[#111418] dark:text-white text-lg font-bold mb-2 line-clamp-1 group-hover:text-primary transition-colors">
+                                {{ complaint.subject }}</h3>
+                            <p class="text-[#617589] dark:text-gray-400 text-sm leading-relaxed line-clamp-2">
+                                {{complaint.Description }}</p>
+                        </div>
+                        <div class="flex items-center gap-2 mb-4 text-xs font-medium text-[#617589] dark:text-gray-500">
+                            <span
+                                class="flex items-center gap-1 bg-background-light dark:bg-gray-800 px-2 py-1 rounded border border-gray-100 dark:border-gray-700">
+                                <span class="material-symbols-outlined text-sm">language</span>
+                                {{ complaint.department }}
+                            </span>
+                            <span>•</span>
+                            <span>{{ complaint.Subject }}</span>
+                        </div>
+                        <div
+                            class="mt-auto pt-4 border-t border-[#f0f2f4] dark:border-gray-700 flex justify-between items-center">
+                            <span class="text-xs text-[#617589] dark:text-gray-400">Created: {{ complaint.updated_at}}</span>
+                            <a href="{% url 'track_complaint_detail' complaint.ComplaintId %}"
+                                class="text-primary text-sm font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                                View Details
+                                <span class="material-symbols-outlined text-base">arrow_forward</span>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div
+                        class="bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl p-6 text-white shadow-lg flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-start justify-between mb-2">
+                                <h3 class="text-xl font-bold">Still facing issues?</h3>
+                                <span class="material-symbols-outlined text-blue-200 text-3xl">support_agent</span>
+                            </div>
+                            <p class="text-blue-100 text-sm mb-6 max-w-md">If you haven't received a resolution within
+                                the expected timeframe, you can escalate your ticket for immediate review.</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <button
+                                class="bg-white text-blue-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-50 transition-colors shadow-sm">
+                                <a href="{% url 'track_complaints' %}">Escalate Ticket</a>
+                            </button>
+                            <!--button class="bg-blue-700/50 text-white border border-blue-400 px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors shadow-sm">
+                                Contact Live Chat
+                            </button-->
+                        </div>
+                    </div>
+                    <div
+                        class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Support Guidelines</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400">
+                                <span
+                                    class="material-symbols-outlined text-green-500 text-[20px] shrink-0">check_circle</span>
+                                <span>Always include your Order ID for faster processing.</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400">
+                                <span
+                                    class="material-symbols-outlined text-green-500 text-[20px] shrink-0">check_circle</span>
+                                <span>Screenshots help us diagnose technical issues quickly.</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400">
+                                <span
+                                    class="material-symbols-outlined text-green-500 text-[20px] shrink-0">check_circle</span>
+                                <span>Priority tickets are typically reviewed within 4 business hours.</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400">
+                                <span
+                                    class="material-symbols-outlined text-green-500 text-[20px] shrink-0">check_circle</span>
+                                <span>Check the FAQ section before submitting a new request.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

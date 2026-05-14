@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Supervisor Dashboard</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200..800&amp;display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script
+        id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { primary: "#137fec", "background-light": "#f6f7f8", "background-dark": "#101922", "surface-light": "#ffffff", "surface-dark": "#1A2633", "text-secondary": "#64748b" }, fontFamily: { display: "Inter" }, borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" } } } };</script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .icon-filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light text-slate-900 font-display overflow-hidden">
+    <div class="flex h-screen w-full">
+        <!-- Sidebar -->
+        <aside class="hidden lg:flex w-72 flex-col border-r border-slate-200 bg-surface-light">
+            <div class="flex h-full flex-col justify-between p-4">
+                <div class="flex flex-col gap-4">
+                    <!-- Brand -->
+                    <div class="flex items-center gap-3 px-2 py-3">
+                        <div
+                            class="size-8 rounded bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-white">
+                            <span class="material-symbols-outlined text-xl">token</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <h1 class="text-slate-900 text-base font-bold leading-none">CompResolve</h1>
+                            <p class="text-text-secondary text-xs font-medium mt-1">Supervisor View</p>
+                        </div>
+                    </div>
+                    <!-- Navigation -->
+                    <nav class="flex flex-col gap-2 mt-4">
+                        <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary border border-primary/10"
+                            href="{% url 'supervisor_dashboard' %}">
+                            <span class="material-symbols-outlined icon-filled text-[20px]">dashboard</span>
+                            <span class="text-sm font-semibold">Dashboard</span>
+                        </a>
+                        <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary hover:bg-slate-50 hover:text-slate-900 transition-colors"
+                            href="{% url 'all_complaints' %}">
+                            <span class="material-symbols-outlined text-[20px]">confirmation_number</span>
+                            <span class="text-sm font-medium">All Tickets</span>
+                        </a>
+                        <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#617589] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                            href="{% url 'manage_users' %}">
+                            <span class="material-symbols-outlined">groups</span>
+                            <p class="text-sm font-medium leading-normal">My Team</p>
+                        </a>
+                        <a href="javascript:void(0)" onclick="toggleGlobalReassignModal()" id="sidebarReassignLink"
+                            class="hidden flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#617589] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                            title="Reassignment Requests">
+                            <div class="relative flex items-center gap-3 w-full">
+                                <span class="material-symbols-outlined">swap_horiz</span>
+                                <p class="text-sm font-medium leading-normal">Reassignment Requests</p>
+                                <span id="sidebarReassignBadge"
+                                    class="hidden absolute top-0 -right-1 size-4 bg-amber-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-slate-800"></span>
+                            </div>
+                        </a>
+                        <!-- <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary hover:bg-slate-50 hover:text-slate-900 transition-colors"
+                            href="#">
+                            <span class="material-symbols-outlined text-[20px]">bar_chart</span>
+                            <span class="text-sm font-medium">Analytics</span>
+                        </a>
+                        <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary hover:bg-slate-50 hover:text-slate-900 transition-colors"
+                            href="#">
+                            <span class="material-symbols-outlined text-[20px]">inbox</span>
+                            <span class="text-sm font-medium">Inbox</span>
+                            <span
+                                class="ml-auto bg-red-100 text-red-600 text-xs px-2 py-0.5 rounded-full font-bold">3</span>
+                        </a> -->
+                    </nav>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <!-- <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary hover:bg-slate-50 hover:text-slate-900 transition-colors"
+                        href="#">
+                        <span class="material-symbols-outlined text-[20px]">settings</span>
+                        <span class="text-sm font-medium">Settings</span>
+                    </a> -->
+                    <!-- Profile trigger -->
+                    <div class="relative w-full" id="profileMenuWrapper">
+                        <!-- Profile trigger button -->
+                        <button type="button" onclick="toggleProfileMenu()"
+                            class="w-full flex items-center gap-3 px-3 py-4 mt-2 border-t border-slate-200 hover:bg-slate-50 transition-colors text-left">
+                            <div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border border-slate-200 flex items-center justify-center bg-primary text-white font-bold shrink-0"
+                                data-alt="Profile picture of the user">
+                                {{ user_name|slice:":1" }}
+                            </div>
+                            <div class="flex flex-col overflow-hidden">
+                                <p class="text-slate-900 text-sm font-semibold truncate">{{ user_name }} ({{user_role}})
+                                </p>
+
+                                <p
+                                    class="text-text-secondary text-[11px] font-medium truncate uppercase tracking-wider">
+                                    {{ user_team }}</p>
+                            </div>
+                            <!-- Chevron -->
+                            <span class="material-symbols-outlined ml-auto text-slate-400">
+                                expand_more
+                            </span>
+                        </button>
+
+                        <!-- Dropdown opens UP -->
+                        <div id="profileMenu"
+                            class="absolute bottom-full mb-2 left-0 w-full bg-white border border-slate-200 rounded-xl shadow-xl hidden z-50">
+                            <a href="{% url 'logout' %}"
+                                class="flex items-center gap-2 px-4 py-3 text-sm text-red-600 hover:bg-slate-50 rounded-xl transition font-medium">
+                                <span class="material-symbols-outlined text-[18px]">logout</span>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+
+                    <script>
+                        function toggleProfileMenu() {
+                            document.getElementById('profileMenu').classList.toggle('hidden');
+                        }
+
+                        document.addEventListener('click', function (e) {
+                            const wrapper = document.getElementById('profileMenuWrapper');
+                            const menu = document.getElementById('profileMenu');
+                            if (wrapper && !wrapper.contains(e.target)) {
+                                menu.classList.add('hidden');
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+        </aside>
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col h-full overflow-hidden relative bg-background-light">
+            <!-- Top Navbar -->
+            <header
+                class="flex items-center justify-between border-b border-slate-200 bg-surface-light px-6 py-3 z-10 shrink-0">
+                <div class="flex items-center gap-4 lg:hidden">
+                    <button class="text-slate-600"><span class="material-symbols-outlined">menu</span></button>
+                    <span class="text-slate-900 font-bold text-lg">CompResolve</span>
+                </div>
+                <!-- Search
+                <div class="hidden md:flex flex-1 max-w-md mx-4">
+                    <div class="relative w-full">
+                        <div
+                            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-secondary">
+                            <span class="material-symbols-outlined text-[20px]">search</span>
+                        </div>
+                        <input
+                            class="block w-full rounded-lg border-slate-200 bg-slate-50 py-2 pl-10 pr-3 text-sm text-slate-900 placeholder-text-secondary focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                            placeholder="Search tickets, agents, or tags..." type="text" />
+                    </div>
+                </div> -->
+                <!-- Right Actions -->
+                <div class="flex items-center gap-3 ml-auto">
+                    <div class="relative" id="notificationMenuWrapper">
+                        <button onclick="toggleNotificationMenu()"
+                            class="relative flex items-center justify-center size-10 rounded-lg hover:bg-slate-50 text-text-secondary hover:text-slate-900 transition-colors">
+                            <span class="material-symbols-outlined text-[24px]">notifications</span>
+                            <span id="notifBadge"
+                                class="hidden absolute top-2 right-2 size-4 bg-red-500 rounded-full border-2 border-surface-light text-[10px] text-white flex items-center justify-center font-bold"></span>
+                        </button>
+
+                        <!-- Notification Dropdown -->
+                        <div id="notificationMenu"
+                            class="hidden absolute top-full right-0 mt-2 w-80 bg-white border border-slate-200 rounded-xl shadow-2xl z-50 overflow-hidden">
+                            <div
+                                class="px-4 py-3 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                                <h3 class="text-sm font-bold text-slate-900">Notifications</h3>
+                                <span id="notifCountText" class="text-xs text-slate-500 font-medium">No new
+                                    alerts</span>
+                            </div>
+                            <div id="notifList" class="max-h-[400px] overflow-y-auto">
+                                <div class="p-8 text-center">
+                                    <span
+                                        class="material-symbols-outlined text-slate-200 text-4xl mb-2">notifications_off</span>
+                                    <p class="text-xs text-slate-400">No pending requests</p>
+                                </div>
+                            </div>
+                            <div class="px-4 py-2 border-t border-slate-100 bg-slate-50/50 text-center">
+                                <a href="#reassignment-requests-section" onclick="toggleNotificationMenu()"
+                                    class="text-[11px] font-bold text-primary hover:underline">View all reassignment
+                                    requests</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <button
+                        class="flex items-center justify-center size-10 rounded-lg hover:bg-slate-50 text-text-secondary hover:text-slate-900 transition-colors">
+                        <span class="material-symbols-outlined text-[24px]">help</span>
+                    </button> -->
+                </div>
+            </header>
+            <!-- Scrollable Content -->
+            <div class="flex-1 overflow-y-auto p-6 md:p-8">
+                <div class="mx-auto max-w-7xl flex flex-col gap-6">
+                    <!-- Page Header & Filters -->
+                    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+                        <div>
+                            <h2 class="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Supervisor
+                                Dashboard
+                            </h2>
+                            <p class="text-text-secondary mt-1">Real-time overview of team performance and critical
+                                issues.</p>
+                        </div>
+
+                    </div>
+                    <!-- Stats / KPI Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Stat 1 -->
+                        <div
+                            class="bg-white border border-slate-200 p-5 rounded-xl flex flex-col gap-1 relative overflow-hidden group shadow-sm">
+                            <div
+                                class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <span
+                                    class="material-symbols-outlined text-6xl text-blue-500">confirmation_number</span>
+                            </div>
+                            <p class="text-text-secondary text-sm font-medium">Total Open Tickets</p>
+                            <div class="flex items-baseline gap-2 mt-1">
+                                <span class="text-3xl font-bold text-slate-900">{{ total_open }}</span>
+                            </div>
+                        </div>
+                        <!-- Stat 2 -->
+                        <div
+                            class="bg-white border border-slate-200 p-5 rounded-xl flex flex-col gap-1 relative overflow-hidden group shadow-sm">
+                            <div
+                                class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <span class="material-symbols-outlined text-6xl text-purple-500">verified</span>
+                            </div>
+                            <p class="text-text-secondary text-sm font-medium">SLA Adherence</p>
+                            <div class="flex items-baseline gap-2 mt-1">
+                                <span class="text-3xl font-bold text-slate-900">{{ sla_adherence }}%</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-1 mt-3 rounded-full overflow-hidden">
+                                <div class="bg-purple-500 h-full w-[{{ sla_adherence }}%]"></div>
+                            </div>
+                        </div>
+                        <!-- Stat 3 -->
+                        <div
+                            class="bg-white border border-slate-200 p-5 rounded-xl flex flex-col gap-1 relative overflow-hidden group shadow-sm">
+                            <div
+                                class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <span class="material-symbols-outlined text-6xl text-amber-500">schedule</span>
+                            </div>
+                            <p class="text-text-secondary text-sm font-medium">Avg Resolution Time</p>
+                            <div class="flex items-baseline gap-2 mt-1">
+                                <span class="text-3xl font-bold text-slate-900">{{ avg_resolution_time }}</span>
+                            </div>
+                        </div>
+                        <!-- Stat 4 -->
+                        <div
+                            class="bg-white border border-slate-200 p-5 rounded-xl flex flex-col gap-1 relative overflow-hidden group shadow-sm">
+                            <div
+                                class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <span class="material-symbols-outlined text-6xl text-rose-500">warning</span>
+                            </div>
+                            <p class="text-text-secondary text-sm font-medium">Active Escalations</p>
+                            <div class="flex items-baseline gap-2 mt-1">
+                                <span class="text-3xl font-bold text-slate-900">{{ active_escalations }}</span>
+                            </div>
+                            <p class="text-xs text-text-secondary mt-1">Requires immediate attention</p>
+                        </div>
+                    </div>
+                    <!-- Main Grid Layout -->
+                    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                        <!-- Left Column: Agent Workload -->
+                        <div class="xl:col-span-2 flex flex-col gap-6">
+                            <div
+                                class="bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col shadow-sm">
+                                <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+                                    <h3 class="text-lg font-bold text-slate-900">Agent Workload</h3>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead class="bg-slate-50 text-xs uppercase text-text-secondary font-semibold">
+                                            <tr>
+                                                <th class="px-6 py-4">Agent Name</th>
+                                                <th class="px-6 py-4">Status</th>
+                                                <th class="px-6 py-4">Active Queue</th>
+                                                <th class="px-6 py-4">CSAT</th>
+                                                <th class="px-6 py-4 text-right">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-100 text-sm">
+                                            {% for agent in team_agents %}
+                                            <tr class="hover:bg-slate-50 transition-colors group cursor-pointer"
+                                                data-username="{{ agent.username }}" data-initial="{{ agent.initial }}"
+                                                onclick="openModal(this)">
+                                                <td class="px-6 py-4">
+                                                    <div class="flex items-center gap-3">
+                                                        <div
+                                                            class="size-9 rounded-full bg-primary flex items-center justify-center text-white font-bold">
+                                                            {{ agent.initial }}
+                                                        </div>
+                                                        <div>
+                                                            <p class="font-medium text-slate-900">{{ agent.name }}</p>
+                                                            <p class="text-xs text-text-secondary">{{ agent.email }}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    <span
+                                                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium {% if agent.status == 'CONFIRMED' or agent.status == 'Online' %}bg-emerald-100 text-emerald-700{% else %}bg-slate-100 text-slate-500{% endif %}">
+                                                        <span
+                                                            class="size-1.5 rounded-full {% if agent.status == 'CONFIRMED' or agent.status == 'Online' %}bg-emerald-500{% else %}bg-slate-400{% endif %}"></span>
+                                                        {{ agent.status }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="text-slate-900 font-semibold">{{  agent.open_tickets}}</span>
+                                                        <div
+                                                            class="w-24 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                                                            <div class="{% if agent.open_tickets > 15 %}bg-red-500{% elif agent.open_tickets > 10 %}bg-yellow-500{% else %}bg-emerald-500{% endif %} h-full"
+                                                                style="width: {% widthratio agent.open_tickets 20 100 %}%">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    <div class="flex items-center gap-1 text-amber-500">
+                                                        <span
+                                                            class="material-symbols-outlined icon-filled text-[16px]">star</span>
+                                                        <span class="text-slate-900 text-sm font-medium">{{ agent.csat }}</span>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4 text-right">
+                                                    <button
+                                                        class="text-text-secondary hover:text-slate-900 p-1 rounded hover:bg-slate-100">
+                                                        <span class="material-symbols-outlined">more_vert</span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="5"
+                                                    class="px-6 py-10 text-center text-text-secondary italic">No agents
+                                                    found in your support groups.</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- Ticket Status Distribution -->
+                            <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                                <h3 class="text-lg font-bold text-slate-900 mb-4">Ticket Status Distribution</h3>
+                                <div class="flex flex-col gap-4">
+                                    <!-- Bar Simulation -->
+                                    <div
+                                        class="flex h-12 w-full rounded-xl overflow-hidden font-bold text-[11px] shadow-sm bg-slate-100">
+                                        {% if status_pct.Open > 0 %}
+                                        <div class="bg-primary hover:opacity-90 transition-opacity flex items-center justify-center text-white px-2 overflow-hidden shrink-0"
+                                            style="width: {{ status_pct.Open }}%" title="Open: {{ status_pct.Open }}%">
+                                            <span class="truncate">{% if status_pct.Open > 15 %}Open ({{ status_pct.Open  }}%){% else %}{{ status_pct.Open }}%{% endif %}</span>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if status_pct.Escalated > 0 %}
+                                        <div class="bg-rose-500 hover:opacity-90 transition-opacity flex items-center justify-center text-white px-2 overflow-hidden shrink-0"
+                                            style="width: {{ status_pct.Escalated }}%"
+                                            title="Escalated: {{ status_pct.Escalated }}%">
+                                            <span class="truncate">{% if status_pct.Escalated > 15 %}Escalated ({{  status_pct.Escalated }}%){% else %}{{ status_pct.Escalated }}%{% endif %}</span>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if status_pct.In_Progress > 0 %}
+                                        <div class="bg-blue-500 hover:opacity-90 transition-opacity flex items-center justify-center text-white px-2 overflow-hidden shrink-0"
+                                            style="width: {{ status_pct.In_Progress }}%"
+                                            title="In Progress: {{ status_pct.In_Progress }}%">
+                                            <span class="truncate">{% if status_pct.In_Progress > 15 %}In Progress ({{  status_pct.In_Progress }}%){% else %}{{ status_pct.In_Progress }}%{% endif %}</span>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if status_pct.Pending > 0 %}
+                                        <div class="bg-amber-500 hover:opacity-90 transition-opacity flex items-center justify-center text-white px-2 overflow-hidden shrink-0"
+                                            style="width: {{ status_pct.Pending }}%"
+                                            title="Pending: {{ status_pct.Pending }}%">
+                                            <span class="truncate">{% if status_pct.Pending > 15 %}Pending ({{  status_pct.Pending }}%){% else %}{{ status_pct.Pending }}%{% endif %}</span>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if status_pct.Resolved > 0 %}
+                                        <div class="bg-emerald-500 hover:opacity-90 transition-opacity flex items-center justify-center text-white px-2 overflow-hidden shrink-0"
+                                            style="width: {{ status_pct.Resolved }}%"
+                                            title="Resolved: {{ status_pct.Resolved }}%">
+                                            <span class="truncate">{% if status_pct.Resolved > 15 %}Resolved ({{  status_pct.Resolved }}%){% else %}{{ status_pct.Resolved }}%{% endif %}</span>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if status_pct.Closed > 0 %}
+                                        <div class="bg-slate-600 hover:opacity-90 transition-opacity flex items-center justify-center text-white px-2 overflow-hidden shrink-0"
+                                            style="width: {{ status_pct.Closed }}%"
+                                            title="Closed: {{ status_pct.Closed }}%">
+                                            <span class="truncate">{% if status_pct.Closed > 15 %}Closed ({{  status_pct.Closed }}%){% else %}{{ status_pct.Closed }}%{% endif %}</span>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if status_pct.Cancelled > 0 %}
+                                        <div class="bg-slate-400 hover:opacity-90 transition-opacity flex items-center justify-center text-white px-2 overflow-hidden shrink-0"
+                                            style="width: {{ status_pct.Cancelled }}%"
+                                            title="Cancelled: {{ status_pct.Cancelled }}%">
+                                            <span class="truncate">{% if status_pct.Cancelled > 15 %}Cancelled ({{  status_pct.Cancelled }}%){% else %}{{ status_pct.Cancelled }}%{% endif %}</span>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <!-- Legend -->
+                                    <div class="flex flex-wrap gap-4 mt-2">
+                                        {% if status_pct.Open > 0 %}
+                                        <div class="flex items-center gap-2">
+                                            <span class="size-3 rounded-full bg-primary"></span>
+                                            <span class="text-sm text-text-secondary">Open</span>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if status_pct.Escalated > 0 %}
+                                        <div class="flex items-center gap-2">
+                                            <span class="size-3 rounded-full bg-rose-500"></span>
+                                            <span class="text-sm text-text-secondary">Escalated</span>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if status_pct.In_Progress > 0 %}
+                                        <div class="flex items-center gap-2">
+                                            <span class="size-3 rounded-full bg-blue-500"></span>
+                                            <span class="text-sm text-text-secondary">In Progress</span>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if status_pct.Pending > 0 %}
+                                        <div class="flex items-center gap-2">
+                                            <span class="size-3 rounded-full bg-amber-500"></span>
+                                            <span class="text-sm text-text-secondary">Pending</span>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if status_pct.Resolved > 0 %}
+                                        <div class="flex items-center gap-2">
+                                            <span class="size-3 rounded-full bg-emerald-500"></span>
+                                            <span class="text-sm text-text-secondary">Resolved</span>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if status_pct.Closed > 0 %}
+                                        <div class="flex items-center gap-2">
+                                            <span class="size-3 rounded-full bg-slate-600"></span>
+                                            <span class="text-sm text-text-secondary">Closed</span>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if status_pct.Cancelled > 0 %}
+                                        <div class="flex items-center gap-2">
+                                            <span class="size-3 rounded-full bg-slate-400"></span>
+                                            <span class="text-sm text-text-secondary">Cancelled</span>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Right Column: Escalations -->
+                        <div class="xl:col-span-1 flex flex-col h-full">
+                            <div class="bg-white border border-slate-200 rounded-xl flex flex-col h-full shadow-sm">
+                                <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <div class="size-2 rounded-full bg-rose-500 animate-pulse"></div>
+                                        <h3 class="text-lg font-bold text-slate-900">Priority Queue</h3>
+                                    </div>
+                                    <span
+                                        class="text-xs bg-rose-50 text-rose-600 px-2 py-0.5 rounded font-bold border border-rose-100">{{active_escalations }}
+                                        Active</span>
+                                </div>
+                                <div class="p-4 flex flex-col gap-3 overflow-y-auto max-h-[600px]">
+                                    {% for item in priority_queue %}
+                                    <div class="bg-slate-50 p-4 rounded-lg border-l-4 {% if item.sla_status == 'Breached' %}border-rose-500{% elif item.sla_status == 'At Risk' %}border-amber-500{% else %}border-primary{% endif %} hover:bg-slate-100 transition-colors cursor-pointer group"
+                                        onclick="window.location='{% url 'admin_ticket_detail' item.complaint_id %}'">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <span class="text-xs font-mono text-text-secondary">{{ item.id }}</span>
+                                            <span
+                                                class="text-[10px] uppercase font-bold tracking-wider {% if item.priority == 'Critical' or item.priority == 'High' %}text-rose-600{% else %}text-amber-600{% endif %}">{{item.priority}}</span>
+                                        </div>
+                                        <h4
+                                            class="text-slate-900 font-medium text-sm mb-1 group-hover:text-primary transition-colors">
+                                            {{ item.subject }}</h4>
+                                        <p class="text-xs text-text-secondary mb-3">{{ item.category }}</p>
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center gap-1.5">
+                                                <span
+                                                    class="material-symbols-outlined text-[14px] {% if item.sla_status == 'Breached' %}text-rose-500{% elif item.sla_status == 'At Risk' %}text-amber-500{% else %}text-emerald-500{% endif %}">schedule</span>
+                                                <span
+                                                    class="text-xs {% if item.sla_status == 'Breached' %}text-rose-600{% elif item.sla_status == 'At Risk' %}text-amber-600{% else %}text-emerald-600{% endif %} font-medium">{{item.sla_status}}</span>
+                                            </div>
+                                            <button
+                                                class="size-6 rounded flex items-center justify-center bg-white border border-slate-200 text-text-secondary hover:text-slate-900 shadow-sm">
+                                                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    {% empty %}
+                                    <div class="py-10 text-center text-text-secondary italic text-sm">No priority
+                                        tickets in queue.</div>
+                                    {% endfor %}
+                                </div>
+                                <div class="p-4 border-t border-slate-200 mt-auto">
+                                    <button
+                                        class="w-full py-2 bg-primary/10 text-primary text-sm font-semibold rounded-lg hover:bg-primary hover:text-white transition-colors">View
+                                        All Escalations</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reassignment Requests Section -->
+                    <div id="reassignment-requests-section"
+                        class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+                        <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-amber-500">swap_horiz</span>
+                                <h3 class="text-lg font-bold text-slate-900">Reassignment Requests</h3>
+                            </div>
+                            <span id="reassignRequestCount"
+                                class="text-xs bg-amber-50 text-amber-600 px-2 py-0.5 rounded font-bold border border-amber-100">
+                                Loading...
+                            </span>
+                        </div>
+                        <div id="reassignRequestsContainer" class="p-4 max-h-[400px] overflow-y-auto">
+                            <div class="flex items-center justify-center py-6">
+                                <div
+                                    class="animate-spin size-6 border-2 border-primary border-t-transparent rounded-full">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Agent Detail Modal -->
+    <div id="agentModal"
+        class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 sm:p-6"
+        role="dialog">
+        <div class="bg-white w-full max-w-6xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+            <div
+                class="flex-shrink-0 p-6 border-b border-slate-200 flex flex-col sm:flex-row sm:items-start justify-between bg-white z-10 gap-4">
+                <div class="flex items-center gap-5">
+                    <div id="modalInitialCircle"
+                        class="size-16 rounded-full flex items-center justify-center text-2xl font-bold bg-primary text-white shadow-md">
+                        <span id="modalInitial">S</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <div class="flex items-center gap-3">
+                            <h2 id="modalName" class="text-2xl font-bold text-slate-900">Sarah Jenkins
+                            </h2>
+                            <span id="modalStatusBadge"
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <span id="modalStatusDot" class="size-1.5 rounded-full bg-green-500 mr-1.5"></span>
+                                <span id="modalStatusText">Online</span>
+                            </span>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-4 text-sm text-text-secondary">
+                            <span class="flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[18px]">badge</span>
+                                <span id="modalRole">Tier 1 Support</span>
+                            </span>
+                            <span class="flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[18px]">mail</span>
+                                <span id="modalEmail">sarah.j@omni.com</span>
+                            </span>
+                            <span class="flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                                Joined <span id="modalJoined">Mar 15, 2024</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="closeModal()"
+                        class="flex items-center justify-center size-9 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+            </div>
+            <div class="flex-1 overflow-y-auto bg-slate-50">
+                <div class="p-6 flex flex-col gap-6">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div
+                            class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-medium text-text-secondary uppercase tracking-wide">
+                                    Total Assigned</p>
+                                <p id="modalTotal" class="text-2xl font-bold text-slate-900 mt-1">0</p>
+                            </div>
+                            <div class="size-10 rounded-lg bg-blue-50 flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined">assignment</span>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-medium text-text-secondary uppercase tracking-wide">
+                                    SLA On Track</p>
+                                <p id="modalOnTrack" class="text-2xl font-bold text-green-600 mt-1">
+                                    0</p>
+                            </div>
+                            <div class="size-10 rounded-lg bg-green-50 flex items-center justify-center text-green-600">
+                                <span class="material-symbols-outlined">check_circle</span>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-medium text-text-secondary uppercase tracking-wide">
+                                    SLA At Risk</p>
+                                <p id="modalAtRisk" class="text-2xl font-bold text-yellow-600 mt-1">0</p>
+                            </div>
+                            <div
+                                class="size-10 rounded-lg bg-yellow-50 flex items-center justify-center text-yellow-600">
+                                <span class="material-symbols-outlined">warning</span>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-medium text-text-secondary uppercase tracking-wide">
+                                    SLA Breached</p>
+                                <p id="modalBreached" class="text-2xl font-bold text-red-600 mt-1">0
+                                </p>
+                            </div>
+                            <div class="size-10 rounded-lg bg-red-50 flex items-center justify-center text-red-600">
+                                <span class="material-symbols-outlined">error</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <h3 class="text-lg font-bold text-slate-900">Assigned Tickets</h3>
+                        </div>
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-slate-50 border-b border-slate-200">
+                                            <th class="py-3 px-4 w-10 text-center"><input
+                                                    class="rounded border-slate-300 text-primary bg-white"
+                                                    type="checkbox" /></th>
+                                            <th
+                                                class="py-3 px-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                                                Ticket ID</th>
+                                            <th
+                                                class="py-3 px-4 text-xs font-semibold uppercase tracking-wider text-text-secondary min-w-[200px]">
+                                                Subject</th>
+                                            <th
+                                                class="py-3 px-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                                                Priority</th>
+                                            <th
+                                                class="py-3 px-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                                                Status</th>
+                                            <th
+                                                class="py-3 px-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                                                SLA Status</th>
+                                            <th
+                                                class="py-3 px-4 text-xs font-semibold uppercase tracking-wider text-text-secondary whitespace-nowrap">
+                                                Created</th>
+                                            <th class="py-3 px-4 w-12"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="modalTicketsBody" class="divide-y divide-slate-100">
+                                        <!-- Rows injected by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="modalViewAllLink"
+                                class="px-4 py-3 border-t border-slate-200 bg-slate-50 text-xs text-center text-text-secondary">
+                                View all assignments
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ team_agents|json_script:"agents-data" }}
+
+    <script>
+        const modal = document.getElementById('agentModal');
+        const agentsData = JSON.parse(document.getElementById('agents-data').textContent);
+
+        function openModal(row) {
+            const username = row.dataset.username;
+            const agent = agentsData.find(a => a.username === username);
+            if (!agent) return;
+
+            document.getElementById('modalName').textContent = agent.name;
+            document.getElementById('modalEmail').textContent = agent.email;
+            document.getElementById('modalRole').textContent = agent.role || 'Agent';
+            document.getElementById('modalJoined').textContent = agent.created ? new Date(agent.created).toLocaleDateString() : 'N/A';
+            document.getElementById('modalInitial').textContent = row.dataset.initial;
+            document.getElementById('modalStatusText').textContent = agent.status;
+
+            // Stats
+            document.getElementById('modalTotal').textContent = agent.stats.total;
+            document.getElementById('modalOnTrack').textContent = agent.stats.on_track;
+            document.getElementById('modalAtRisk').textContent = agent.stats.at_risk;
+            document.getElementById('modalBreached').textContent = agent.stats.breached;
+
+            // Tickets
+            const tbody = document.getElementById('modalTicketsBody');
+            tbody.innerHTML = '';
+
+            if (agent.active_tickets.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-sm text-text-secondary">No active tickets assigned.</td></tr>';
+            } else {
+                agent.active_tickets.forEach(ticket => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'group hover:bg-slate-50';
+
+                    let priorityClass = 'bg-blue-100 text-blue-800';
+                    if (ticket.priority === 'High' || ticket.priority === 'Critical') priorityClass = 'bg-red-100 text-red-800';
+
+                    let slaClass = 'text-green-600';
+                    let slaDot = 'bg-green-500';
+                    if (ticket.sla_status === 'At Risk') { slaClass = 'text-yellow-600'; slaDot = 'bg-yellow-500'; }
+                    else if (ticket.sla_status === 'Breached') { slaClass = 'text-red-600'; slaDot = 'bg-red-500'; }
+
+                    tr.innerHTML = `
+                        <td class="py-3 px-4 text-center"><input class="rounded border-slate-300 text-primary bg-white" type="checkbox"/></td>
+                        <td class="py-3 px-4 text-sm font-medium text-primary hover:underline cursor-pointer whitespace-nowrap" onclick="window.location='/admin_ticket_detail/${ticket.complaint_id}/'">${ticket.id}</td>
+                        <td class="py-3 px-4 text-sm text-slate-900">${ticket.subject}</td>
+                        <td class="py-3 px-4"><span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${priorityClass}">${ticket.priority}</span></td>
+                        <td class="py-3 px-4"><span class="text-sm text-slate-900">${ticket.status}</span></td>
+                        <td class="py-3 px-4">
+                            <div class="flex items-center gap-1.5 ${slaClass} text-sm font-medium whitespace-nowrap">
+                                <span class="size-2 rounded-full ${slaDot}"></span>
+                                ${ticket.sla_status}
+                            </div>
+                        </td>
+                        <td class="py-3 px-4 text-sm text-text-secondary whitespace-nowrap">${ticket.created}</td>
+                        <td class="py-3 px-4 text-right">
+                            <button class="text-text-secondary hover:text-slate-900"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            document.getElementById('modalViewAllLink').textContent = `View all ${agent.stats.total} assignments`;
+
+            // Status Badge
+            const badge = document.getElementById('modalStatusBadge');
+            const dot = document.getElementById('modalStatusDot');
+            if (agent.status === 'CONFIRMED' || agent.status === 'Online') {
+                badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200';
+                dot.className = 'size-1.5 rounded-full bg-green-500 mr-1.5';
+            } else {
+                badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200';
+                dot.className = 'size-1.5 rounded-full bg-yellow-500 mr-1.5';
+            }
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close on outside click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+    </script>
+
+    <!-- Process Reassignment Request Modal -->
+    <div id="processRequestModal"
+        class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-200 bg-amber-50/50 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-amber-600">swap_horiz</span>
+                    <h3 class="text-lg font-bold text-amber-900">Process Reassignment Request</h3>
+                </div>
+                <button onclick="closeProcessModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="p-6">
+                <!-- Request Details Card -->
+                <div
+                    class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-5 mb-5 border border-slate-100 dark:border-slate-800">
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <p class="text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1">Agent</p>
+                            <p id="processModalAgent" class="text-sm font-bold text-slate-900 dark:text-white">-</p>
+                        </div>
+                        <div>
+                            <p class="text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1">Team</p>
+                            <p id="processModalTeam" class="text-sm font-bold text-slate-900 dark:text-white">-</p>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1">Ticket</p>
+                        <p id="processModalTicket" class="text-sm font-bold text-slate-900 dark:text-white">-</p>
+                    </div>
+                    <div class="mb-4">
+                        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1">Reason</p>
+                        <p id="processModalReason" class="text-sm font-bold text-amber-600">-</p>
+                    </div>
+                    <div>
+                        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1">Agent's Comments
+                        </p>
+                        <p id="processModalAgentComments" class="text-sm text-slate-600 dark:text-slate-400 italic">"-"
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Supervisor Comments -->
+                <div class="mb-5">
+                    <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Your Comments</label>
+                    <textarea id="supervisorComments" rows="2" placeholder="Add comments for the agent..."
+                        class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary focus:border-primary text-sm resize-none"></textarea>
+                </div>
+
+                <!-- New Agent Selection -->
+                <div class="mb-6">
+                    <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Assign to New Agent
+                        (Optional)</label>
+                    <div class="flex gap-2">
+                        <select id="newAgentSelect"
+                            class="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary focus:border-primary text-sm">
+                            <option value="">Keep current assignment</option>
+                            {% for agent in team_agents %}
+                            <option value="{{ agent.email }}" data-name="{{ agent.name }}">{{ agent.name }} ({{ agent.email }})</option>
+                            {% endfor %}
+                        </select>
+                        <button onclick="transferToOtherTeam()"
+                            class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all flex items-center gap-2 border border-slate-200">
+                            <span class="material-symbols-outlined text-[18px]">move_up</span>
+                            Transfer
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-3">
+                    <button onclick="processRequest('reject')"
+                        class="flex-1 py-3 bg-red-500/10 hover:bg-red-500 text-red-600 hover:text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all border border-red-200">
+                        <span class="material-symbols-outlined text-[20px]">close</span>
+                        Reject
+                    </button>
+                    <button onclick="processRequest('approve')"
+                        class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20">
+                        <span class="material-symbols-outlined text-[20px]">check</span>
+                        Approve
+                    </button>
+                </div>
+            </div>
+            <input type="hidden" id="currentRequestId" value="">
+            <input type="hidden" id="currentComplaintId" value="">
+        </div>
+    </div>
+
+    <script>
+        let currentRequestData = null;
+
+        // Load reassignment requests
+        async function loadReassignmentRequests() {
+            try {
+                const response = await fetch('/api/pending_reassignment_requests/');
+                const data = await response.json();
+
+                const container = document.getElementById('reassignRequestsContainer');
+                const countBadge = document.getElementById('reassignRequestCount');
+                const notifBadge = document.getElementById('notifBadge');
+                const notifList = document.getElementById('notifList');
+                const notifCountText = document.getElementById('notifCountText');
+
+                if (data.success) {
+                    const requests = data.requests;
+                    countBadge.textContent = `${requests.length} Pending`;
+
+                    // Update Notification Bell
+                    if (requests.length > 0) {
+                        notifBadge.textContent = requests.length;
+                        notifBadge.classList.remove('hidden');
+                        notifCountText.textContent = `${requests.length} pending requests`;
+
+                        notifList.innerHTML = requests.map(req => `
+                            <div class="px-4 py-3 border-b border-slate-50 hover:bg-slate-50 transition-colors cursor-pointer" onclick="window.location='/admin_ticket_detail/${req.complaint_id}/'">
+                                <div class="flex items-start gap-3">
+                                    <div class="size-8 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+                                        <span class="material-symbols-outlined text-amber-600 text-sm">swap_horiz</span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-[13px] font-bold text-slate-900 truncate">${req.ticket_subject}</p>
+                                        <p class="text-[11px] text-slate-500 mt-0.5">Requested by ${req.requested_by}</p>
+                                        <p class="text-[10px] text-slate-400 mt-1 uppercase font-medium">${req.created_at}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        notifBadge.classList.add('hidden');
+                        notifCountText.textContent = 'No new alerts';
+                        notifList.innerHTML = `
+                            <div class="p-8 text-center">
+                                <span class="material-symbols-outlined text-slate-200 text-4xl mb-2">notifications_off</span>
+                                <p class="text-xs text-slate-400">No pending requests</p>
+                            </div>
+                        `;
+                    }
+
+                    if (requests.length === 0) {
+                        container.innerHTML = `
+                            <div class="py-8 text-center" id="reassignment-requests-section">
+                                <span class="material-symbols-outlined text-slate-300 text-5xl mb-2">inbox</span>
+                                <p class="text-text-secondary text-sm italic">No pending reassignment requests</p>
+                            </div>
+                        `;
+                    } else {
+                        container.innerHTML = requests.map(req => `
+                            <div class="bg-slate-50 rounded-lg p-4 mb-3 border-l-4 border-amber-400 hover:bg-slate-100 transition-colors">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="text-xs font-mono text-text-secondary">${req.created_at}</span>
+                                    <span class="text-[10px] uppercase font-bold text-amber-600 bg-amber-100 px-2 py-0.5 rounded">${req.status}</span>
+                                </div>
+                                <h4 class="text-slate-900 font-medium text-sm mb-1">${req.ticket_subject}</h4>
+                                <p class="text-xs text-text-secondary mb-2">
+                                    <span class="font-medium">${req.requested_by}</span> • ${req.agent_team}
+                                </p>
+                                <p class="text-xs text-amber-700 mb-3">
+                                    <span class="font-semibold">Reason:</span> ${req.reason}
+                                </p>
+                                <div class="flex justify-end gap-2">
+                                    <button onclick="viewTicket('${req.complaint_id}')" 
+                                        class="text-xs text-primary hover:underline font-medium">View Ticket</button>
+                                    <button onclick="openProcessModal('${req.request_id}', '${req.complaint_id}', '${req.requested_by}', '${req.agent_team}', '${req.ticket_subject}', '${req.reason}', '${req.comments || ''}')"
+                                        class="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded transition-colors">
+                                        Process
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                } else {
+                    container.innerHTML = `<div class="py-6 text-center text-red-500 text-sm">Error loading requests</div>`;
+                }
+            } catch (error) {
+                console.error('Error loading reassignment requests:', error);
+                document.getElementById('reassignRequestsContainer').innerHTML =
+                    `<div class="py-6 text-center text-red-500 text-sm">Failed to load requests</div>`;
+            }
+        }
+
+        function toggleNotificationMenu() {
+            const menu = document.getElementById('notificationMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        document.addEventListener('click', function (e) {
+            const wrapper = document.getElementById('notificationMenuWrapper');
+            const menu = document.getElementById('notificationMenu');
+            if (wrapper && !wrapper.contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+
+        function viewTicket(complaintId) {
+            window.open(`/admin_ticket_detail/${complaintId}/`, '_blank');
+        }
+
+        function openProcessModal(requestId, complaintId, agent, team, ticket, reason, agentComments) {
+            document.getElementById('currentRequestId').value = requestId;
+            document.getElementById('currentComplaintId').value = complaintId;
+            document.getElementById('processModalAgent').textContent = agent;
+            document.getElementById('processModalTeam').textContent = team;
+            document.getElementById('processModalTicket').textContent = ticket;
+            document.getElementById('processModalReason').textContent = reason;
+            document.getElementById('processModalAgentComments').textContent = agentComments || 'No additional comments';
+            document.getElementById('supervisorComments').value = '';
+            document.getElementById('newAgentSelect').value = '';
+
+            document.getElementById('processRequestModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeProcessModal() {
+            document.getElementById('processRequestModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function transferToOtherTeam() {
+            const complaintId = document.getElementById('currentComplaintId').value;
+            // Redirect to ticket detail and open transfer modal (intent)
+            window.location.href = `/admin_ticket_detail/${complaintId}/?intent=transfer`;
+        }
+
+        async function processRequest(action) {
+            const requestId = document.getElementById('currentRequestId').value;
+            const comments = document.getElementById('supervisorComments').value;
+            const newAgentSelect = document.getElementById('newAgentSelect');
+            const newAgentEmail = newAgentSelect.value;
+            const newAgentName = newAgentSelect.options[newAgentSelect.selectedIndex]?.dataset?.name || '';
+
+            // Get CSRF token
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value ||
+                document.cookie.split('; ').find(c => c.startsWith('csrftoken='))?.split('=')[1];
+
+            try {
+                const formData = new FormData();
+                formData.append('action', action);
+                formData.append('comments', comments);
+                if (action === 'approve' && newAgentEmail) {
+                    formData.append('new_agent_email', newAgentEmail);
+                    formData.append('new_agent_name', newAgentName);
+                }
+
+                const response = await fetch(`/api/process_reassignment_request/${requestId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showToast(`Request ${action === 'approve' ? 'approved' : 'rejected'} successfully!`, 'success');
+                    closeProcessModal();
+                    loadReassignmentRequests(); // Refresh the list
+                } else {
+                    showToast('Error: ' + (data.error || 'Failed to process request'), 'error');
+                }
+            } catch (error) {
+                console.error('Error processing request:', error);
+                showToast('An error occurred. Please try again.', 'error');
+            }
+        }
+
+        async function toggleGlobalReassignModal() {
+            const modal = document.getElementById('globalReassignModal');
+            const content = document.getElementById('globalReassignContent');
+
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                content.innerHTML = '<div class="flex justify-center py-20"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>';
+
+                try {
+                    const response = await fetch('/api/all_reassignment_requests/');
+                    const data = await response.json();
+
+                    if (data.success) {
+                        if (data.requests.length === 0) {
+                            content.innerHTML = '<p class="text-center text-slate-500 py-10 italic">No requests found.</p>';
+                        } else {
+                            content.innerHTML = data.requests.map(req => `
+                                <div onclick="window.location='/admin_ticket_detail/${req.complaint_id}/'" 
+                                    class="bg-white dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800 mb-3 hover:border-primary/50 transition-all cursor-pointer group">
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-[10px] font-bold uppercase tracking-tight px-1.5 py-0.5 rounded ${req.status === 'Pending' ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 text-slate-500'}">${req.status}</span>
+                                        <span class="text-[10px] text-slate-400">${req.created_at}</span>
+                                    </div>
+                                    <h4 class="text-sm font-bold text-slate-900 dark:text-white truncate group-hover:text-primary transition-colors">${req.ticket_subject}</h4>
+                                    <p class="text-[11px] text-slate-500">By ${req.requested_by}</p>
+                                </div>
+                            `).join('');
+                        }
+                    }
+                } catch (e) { content.innerHTML = '<p class="text-center text-red-500 py-10">Error loading requests</p>'; }
+            } else {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+
+        async function checkGlobalReassignmentRequests() {
+            try {
+                const response = await fetch('/api/all_reassignment_requests/');
+                const data = await response.json();
+                const btn = document.getElementById('sidebarReassignLink');
+                const badge = document.getElementById('sidebarReassignBadge');
+
+                if (data.success && data.pending_count > 0) {
+                    if (btn) btn.classList.remove('hidden');
+                    if (badge) {
+                        badge.textContent = data.pending_count;
+                        badge.classList.remove('hidden');
+                    }
+                } else {
+                    if (btn) btn.classList.add('hidden');
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        // Load requests on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadReassignmentRequests();
+            checkGlobalReassignmentRequests();
+        });
+    </script>
+    <!-- Modal HTML -->
+    <div id="globalReassignModal" class="hidden fixed inset-0 z-[120] overflow-hidden">
+        <div class="flex items-center justify-end min-h-screen">
+            <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] transition-opacity"
+                onclick="toggleGlobalReassignModal()"></div>
+            <div
+                class="relative bg-white dark:bg-slate-900 h-screen w-full max-w-md shadow-2xl flex flex-col border-l border-slate-200 dark:border-slate-800">
+                <div
+                    class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-800/50">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary">swap_horiz</span>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Team Reassignments</h3>
+                    </div>
+                    <button onclick="toggleGlobalReassignModal()"
+                        class="p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full transition-colors text-slate-400">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div id="globalReassignContent"
+                    class="flex-1 overflow-y-auto p-4 custom-scrollbar bg-slate-50/30 dark:bg-transparent">
+                </div>
+            </div>
+        </div>
+        <!-- Toast Notification Container -->
+        <div id="toastContainer" class="fixed top-6 right-6 z-[200] flex flex-col gap-3 pointer-events-none"></div>
+
+        <script>
+            function showToast(message, type = 'success') {
+                const container = document.getElementById('toastContainer');
+                const toast = document.createElement('div');
+
+                const bgColor = type === 'success'
+                    ? 'bg-emerald-600'
+                    : type === 'error'
+                        ? 'bg-red-600'
+                        : 'bg-primary';
+
+                const icon = type === 'success'
+                    ? 'check_circle'
+                    : type === 'error'
+                        ? 'error'
+                        : 'info';
+
+                toast.className = `pointer-events-auto flex items-center gap-3 px-5 py-4 rounded-xl ${bgColor} text-white shadow-2xl transform translate-x-full opacity-0 transition-all duration-300 ease-out max-w-sm`;
+                toast.innerHTML = `
+                <span class="material-symbols-outlined text-[22px]">${icon}</span>
+                <span class="text-sm font-semibold flex-1">${message}</span>
+                <button onclick="this.parentElement.remove()" class="ml-2 hover:bg-white/20 rounded-full p-1 transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">close</span>
+                </button>
+            `;
+
+                container.appendChild(toast);
+
+                // Trigger animation
+                requestAnimationFrame(() => {
+                    toast.classList.remove('translate-x-full', 'opacity-0');
+                    toast.classList.add('translate-x-0', 'opacity-100');
+                });
+
+                // Auto remove after 4 seconds
+                setTimeout(() => {
+                    toast.classList.add('translate-x-full', 'opacity-0');
+                    setTimeout(() => toast.remove(), 300);
+                }, 4000);
+            }
+        </script>
+</body>
+
+</html>

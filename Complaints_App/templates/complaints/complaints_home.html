@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CompResolve Complaint Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>.custom-scrollbar::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased">
+<div class="relative flex min-h-screen w-full flex-row overflow-hidden">
+<aside class="hidden lg:flex flex-col w-72 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shrink-0 h-screen sticky top-0 overflow-y-auto z-20">
+<div class="flex items-center gap-3 px-6 py-6 border-b border-slate-100 dark:border-slate-800">
+<div class="bg-primary/10 flex items-center justify-center rounded-lg size-10 text-primary">
+<span class="material-symbols-outlined text-2xl">grid_view</span>
+</div>
+<div class="flex flex-col">
+<h1 class="text-slate-900 dark:text-white text-base font-bold leading-tight">CompResolve</h1>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-normal">User Dashboard</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 p-4">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors" href="{% url 'user_home' %}">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary group transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-weight="fill">confirmation_number</span>
+<span class="text-sm font-semibold">Complaints</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">history</span>
+<span class="text-sm font-medium">History</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="text-sm font-medium">Notifications</span>
+<span class="ml-auto bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded-full">1</span>
+</a>
+</div>
+<div class="mt-auto flex flex-col gap-2 p-4 border-t border-slate-100 dark:border-slate-800">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="text-sm font-medium">Support Center</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+<div class="flex items-center gap-3 px-3 py-3 mt-2 rounded-xl bg-slate-50 dark:bg-slate-800/50">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-9 shrink-0" data-alt="Portrait of the user administrator" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCUaErqa3eYboyenOnwMQBjQmBcVymkQBLVLPXWgVsuY2IGsk4uDO2zlyjzv_06rQuOQHw0vyP1bo_a3xdbbeI8hIB7lQlsAQ_B1yHHqsrvHVzUAmIPg8FOIlh-fwqhrWcWTMNuyh2fsifs5B7hF1KyRGLZHXnK5Cvhaygooxw9eu_54fMbFyKh-2cKmtMx1mWPk0RPvwATEAfWlqb98HkVl2SdlhWP8jO6G2cuYbM52LBwJ8FJloPGBKbYg1R3fhWuBa5VlYk8Wm4");'></div>
+<div class="flex flex-col min-w-0">
+<p class="text-slate-900 dark:text-white text-sm font-semibold truncate">Sakthi</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs truncate">Verified User</p>
+</div>
+</div>
+</div>
+</aside>
+
+<main class="flex-1 flex flex-col min-w-0 overflow-y-auto h-screen">
+<div class="lg:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">grid_view</span>
+<h1 class="font-bold text-lg">CompResolve</h1>
+</div>
+<button class="text-slate-500">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+<div class="flex flex-col p-6 md:p-10 lg:p-12 max-w-7xl mx-auto w-full h-full">
+<div class="flex flex-col gap-2 mb-8 border-b border-slate-200 dark:border-slate-800 pb-6">
+<h2 class="text-slate-900 dark:text-white text-3xl font-bold tracking-tight">Complaints</h2>
+<p class="text-slate-500 dark:text-slate-400 text-lg">What would you like to do?</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl">
+<a class="group relative flex items-center justify-between p-8 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden" href="#">
+<div class="absolute left-0 top-0 bottom-0 w-2 bg-primary rounded-l-2xl"></div>
+<div class="flex items-center gap-6">
+<div class="hidden sm:flex size-16 items-center justify-center rounded-full bg-blue-50 dark:bg-blue-900/20 text-primary shrink-0 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[32px]">edit_document</span>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="text-xl font-semibold text-primary group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">Register a complaint</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Submit a new issue or grievance.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors text-3xl">chevron_right</span>
+</a>
+<a class="group relative flex items-center justify-between p-8 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden" href="{% url 'track_complaints' %}">
+<div class="absolute left-0 top-0 bottom-0 w-2 bg-blue-400 rounded-l-2xl"></div>
+<div class="flex items-center gap-6">
+<div class="hidden sm:flex size-16 items-center justify-center rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-500 shrink-0 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[32px]">manage_search</span>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="text-xl font-semibold text-blue-500 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">Track my complaint(s)</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Check status of existing tickets.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-blue-500 transition-colors text-3xl">chevron_right</span>
+</a>
+</div>
+<div class="h-12"></div>
+<div class="flex flex-col gap-4 max-w-5xl">
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Recent Activity</h3>
+<a class="text-sm font-medium text-primary hover:underline" href="#">View All</a>
+</div>
+<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-sm text-left text-slate-500 dark:text-slate-400">
+<thead class="text-xs text-slate-700 uppercase bg-slate-50 dark:bg-slate-700 dark:text-slate-300">
+<tr>
+<th class="px-6 py-4 font-semibold" scope="col">Ticket ID</th>
+<th class="px-6 py-4 font-semibold" scope="col">Subject</th>
+<th class="px-6 py-4 font-semibold" scope="col">Status</th>
+<th class="px-6 py-4 text-right font-semibold" scope="col">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+<tr class="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+<td class="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap">#TCK-2023-001</td>
+<td class="px-6 py-4">Login Failure on Mobile App</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600">
+<span class="size-1.5 rounded-full bg-slate-500"></span> Open
+                                            </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary hover:text-blue-700 font-medium text-sm">View</button>
+</td>
+</tr>
+<tr class="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+<td class="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap">#TCK-2023-002</td>
+<td class="px-6 py-4">Billing Discrepancy</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
+<span class="size-1.5 rounded-full bg-amber-500 animate-pulse"></span> In Progress
+                                            </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary hover:text-blue-700 font-medium text-sm">View</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-5xl">
+<div class="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 p-5 rounded-xl flex items-start gap-4">
+<span class="material-symbols-outlined text-blue-600 dark:text-blue-400 text-2xl mt-1">help</span>
+<div>
+<h4 class="font-semibold text-slate-900 dark:text-white mb-1">Help Centre</h4>
+<p class="text-sm text-slate-600 dark:text-slate-400 mb-3">Browse our FAQs or contact support directly if you can't find what you need.</p>
+<a class="text-sm font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300" href="#">Visit Help Centre →</a>
+</div>
+</div>
+<div class="bg-indigo-50 dark:bg-indigo-900/10 border border-indigo-100 dark:border-indigo-900/30 p-5 rounded-xl flex items-start gap-4 lg:col-span-2">
+<span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400 text-2xl mt-1">info</span>
+<div>
+<h4 class="font-semibold text-slate-900 dark:text-white mb-1">Important Notice</h4>
+<p class="text-sm text-slate-600 dark:text-slate-400">Our support team is experiencing higher than usual volume. Response times for non-critical issues may be delayed by up to 24 hours.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <script>
+    console.log("complaints.js loaded!");
+
+    // Utility function to get CSRF token from the page
+    function getCSRFToken() {
+        const el = document.querySelector('[name=csrfmiddlewaretoken]');
+        return el ? el.value : null;
+    }
+
+    // Function to filter complaints and actions
+    function filterComplaint() {
+        const complaintElem = document.getElementById('complaintDropdown');
+        const complaintId = complaintElem ? complaintElem.value : '';
+        const actionElem = document.getElementById('actionTypeDropdown');
+        const actionType = actionElem ? actionElem.value : '';
+
+        // Filter rows in the complaints table based on selected complaint and action type
+        const rows = document.querySelectorAll('#complaintsTableBody tr');
+        rows.forEach(row => {
+            const rowComplaintId = row.querySelector('.complaint-id').textContent.toLowerCase();
+            const rowActionType = row.querySelector('.action-type').textContent.toLowerCase();
+
+            const complaintMatch = !complaintId || rowComplaintId.includes(complaintId.toLowerCase());
+            const actionMatch = actionType === "SelectAll" || rowActionType.includes(actionType.toLowerCase());
+
+            if (complaintMatch && actionMatch) {
+                row.style.display = ""; // Show the row
+            } else {
+                row.style.display = "none"; // Hide the row
+            }
+        });
+    }
+
+    // Function to filter by action type
+    function filterActionType() {
+        filterComplaint();
+    }
+
+    // Add event listeners for filtering actions
+    document.addEventListener("DOMContentLoaded", function() {
+        const filterComplaintNo = document.getElementById("complaintDropdown");
+        const filterActionTypeDropdown = document.getElementById("actionTypeDropdown");
+
+        filterComplaintNo.addEventListener("change", filterComplaint);
+        filterActionTypeDropdown.addEventListener("change", filterActionType);
+
+        // Initial call to populate the table with filters applied
+        filterComplaint();
+    });
+
+</script>
+    <style>
+    
+    .dates-col {
+    width: 15%;
+    text-align: center;
+}/* Center Column Styling */
+.center-col {
+    width: 5%;
+    position: relative;
+}</style>
+   <!-- Track Section -->
+    <h3 class="mb-3">My complaint(s)</h3>
+    <hr>
+    <!-- Back Button -->
+    <div class="d-flex gap-3 mb-3">
+        <!-- Action type filter -->
+        <select id="actionTypeDropdown" class="form-select w-auto" onchange="filterActionType()">
+            <option value="SelectAll" {% if not selected_action_type or selected_action_type == 'SelectAll' %}selected{% endif %}>Select all</option>
+            <option value="MyAction" {% if selected_action_type == 'MyAction' %}selected{% endif %}>My actions</option>
+            <option value="LBG" {% if selected_action_type == 'LBG' %}selected{% endif %}>LBG User action</option>
+            <option value="System" {% if selected_action_type == 'System' %}selected{% endif %}>System process</option>
+        </select>
+        <!-- Back Button (aligned to the right) -->
+        <div class="d-flex justify-content-end mb-3">
+            <a href="{% url 'track_complaints' %}" class="btn btn-secondary">Back to Complaints</a>
+        </div>
+    </div>
+
+    {% if actions %}
+        <p class="complaint-info">
+            <strong>Complaint ID:</strong> {{ complaint_id }} <br>
+            <strong>Dated:</strong> {{ createdAt }} | 
+            <strong>Description:</strong> {{ complaint.0.Description }}
+            <a href="#">Read more</a>
+        </p>
+
+        <!-- Timeline (two-column: dates on left, cards on right) -->
+        <div class="timeline-wrapper">
+           
+                {% if unique_dates %}
+                    {% for ud in unique_dates %}
+                        <div class="date-bubble">{{ ud }}</div>
+                    {% endfor %}
+                {% endif %}
+            
+            <div class="center-col">
+                <div class="timeline-line"></div> <!-- Line connecting events -->
+            </div>
+
+            <div class="cards-col">
+                {% for action in actions %}
+                    <div class="timeline-item {% if action.ActionType == 'User' %}left{% else %}right{% endif %} {{ action.ActionType|lower }}">
+                        <div class="timeline-card">
+                            {% if action.Status %}
+                                <p class="mb-2"><strong>Status: </strong>{{ action.Status }}</p>{% endif %}
+                            {% if action.ActionDescription%}
+                                <p class="mb-2"><strong></strong>{{ action.ActionDescription }}</p>{% endif %}
+                            <p><strong>Date:</strong> {{ action.ActionCreatedAt}}</p>
+                            {% if action.ElapsedTime %}
+                                <small>Elapsed time: {{ action.ElapsedTime }} days</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <span class="badge bg-primary">My actions</span>
+            <span class="badge bg-success">LBG User action</span>
+            <span class="badge bg-warning text-dark">System process</span>
+        </div>
+    {% else %}
+        <p>No actions found for this complaint.</p>
+    {% endif %}
+{% endblock %}

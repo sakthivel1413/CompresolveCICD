@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Manage Complaints {{ user_role }} View</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind Config -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1a2633",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Custom scrollbar for better look in side panels */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-[#111418] dark:text-white h-screen overflow-hidden flex font-display">
+    <!-- Sidebar Navigation -->
+    <aside
+        class="w-64 bg-surface-light dark:bg-surface-dark border-r border-[#e5e7eb] dark:border-[#2a3b4d] flex-shrink-0 flex flex-col justify-between h-full z-20">
+        <div class="flex flex-col gap-4 p-4">
+            <!-- Brand -->
+            <div class="flex gap-3 items-center px-2 py-2 mb-4">
+                <div
+                    class="size-8 rounded bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-white">
+                    <span class="material-symbols-outlined text-xl">token</span>
+                </div>
+                <div class="flex flex-col">
+                    <h1 class="text-[#111418] dark:text-white text-base font-bold leading-normal">CompResolve</h1>
+                    <p class="text-[#617589] dark:text-gray-400 text-xs font-normal leading-normal">{{ user_role }}
+                        Portal</p>
+                </div>
+            </div>
+            <!-- Navigation Links -->
+            <nav class="flex flex-col gap-2">
+                <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#617589] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
+                    href="{% if user_role == 'Admin' %}{% url 'admin_dashboard' %}{% else %}{% url 'supervisor_dashboard' %}{% endif %}">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <p class="text-sm font-medium leading-normal">Dashboard</p>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary group transition-all"
+                    href="{% url 'all_complaints' %}">
+                    <span class="material-symbols-outlined fill-1"
+                        style="font-variation-settings: 'FILL' 1;">chat</span>
+                    <p class="text-sm font-medium leading-normal">Complaints</p>
+                </a>
+                {% if user_role == 'Admin' or user_role == 'Supervisor' %}
+                <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#617589] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    href="{% url 'manage_users' %}">
+                    <span class="material-symbols-outlined">group</span>
+                    <p class="text-sm font-medium leading-normal">Agents</p>
+                </a>
+                {% endif %}
+                <!-- <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#617589] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    href="#">
+                    <span class="material-symbols-outlined">description</span>
+                    <p class="text-sm font-medium leading-normal">Reports</p>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#617589] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    href="#">
+                    <span class="material-symbols-outlined">settings</span>
+                    <p class="text-sm font-medium leading-normal">Settings</p>
+                </a> -->
+            </nav>
+        </div>
+        <!-- User Profile (Bottom Sidebar) -->
+        <div class="p-4 border-t border-[#e5e7eb] dark:border-[#2a3b4d]">
+            <div class="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer transition-colors"
+                onclick="toggleProfileMenu()">
+                <div
+                    class="size-9 rounded-full bg-cover bg-center bg-primary flex items-center justify-center text-white font-bold">
+                    {{ user_name|slice:":1" }}
+                </div>
+                <div class="flex flex-col flex-1 min-w-0">
+                    <p class="text-[#111418] dark:text-white text-sm font-semibold truncate">{{ user_name }}
+                        ({{user_role }})</p>
+                    <p
+                        class="text-[#617589] dark:text-gray-400 text-[11px] font-medium truncate uppercase tracking-wider">
+                        {{ user_team }}</p>
+                </div>
+                <span class="material-symbols-outlined text-gray-400 text-sm">unfold_more</span>
+            </div>
+            <!-- Dropdown Menu -->
+            <div id="profileMenu"
+                class="hidden absolute bottom-20 left-4 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-2 z-50">
+                <a href="{% url 'logout' %}"
+                    class="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md">
+                    <span class="material-symbols-outlined text-lg">logout</span>
+                    Logout
+                </a>
+            </div>
+        </div>
+    </aside>
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+        <!-- Top Header Bar -->
+        <header
+            class="w-full h-16 bg-surface-light dark:bg-surface-dark border-b border-[#e5e7eb] dark:border-[#2a3b4d] flex items-center justify-between px-6 py-3 flex-shrink-0 z-10">
+            <!-- Left: Breadcrumbs -->
+            <div class="flex items-center gap-2">
+                <span class="text-[#617589] dark:text-gray-400 text-sm">Workspace</span>
+                <span class="text-[#617589] dark:text-gray-400 text-sm">/</span>
+                <span class="text-[#111418] dark:text-white text-sm font-medium">Manage Complaints</span>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="relative w-64 hidden md:block">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[#9ca3af]">
+                        <span class="material-symbols-outlined text-[20px]">search</span>
+                    </span>
+                    <input
+                        class="w-full h-10 pl-10 pr-4 rounded-lg bg-[#f0f2f4] dark:bg-[#2a3b4d] border-none text-sm focus:ring-2 focus:ring-primary dark:text-white placeholder-[#9ca3af]"
+                        placeholder="Search ticket ID or content..." type="text" />
+                </div>
+                <button
+                    class="size-10 flex items-center justify-center rounded-lg hover:bg-[#f0f2f4] dark:hover:bg-[#2a3b4d] text-[#617589] dark:text-gray-400 transition-colors relative">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span
+                        class="absolute top-2.5 right-2.5 size-2 bg-red-500 rounded-full border-2 border-white dark:border-[#1a2632]"></span>
+                </button>
+            </div>
+        </header>
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto p-6 w-full">
+            <!-- Added padding-right to account for the drawer -->
+            <!-- Stats Row -->
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+                <div
+                    class="bg-white dark:bg-[#1a2632] p-5 rounded-lg border border-[#e5e7eb] dark:border-[#2a3b4d] shadow-sm">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-[#617589] dark:text-[#94a3b8] font-medium text-sm">Total Complaints</p>
+                        <span class="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 p-1 rounded">
+                            <span class="material-symbols-outlined text-[20px]">inbox</span>
+                        </span>
+                    </div>
+                    <p class="text-2xl font-bold text-[#111418] dark:text-white">{{ stats.total }}</p>
+                    <p class="text-green-600 text-xs font-medium mt-1 flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[16px]">trending_up</span> all time
+                    </p>
+                </div>
+                <div
+                    class="bg-white dark:bg-[#1a2632] p-5 rounded-lg border border-[#e5e7eb] dark:border-[#2a3b4d] shadow-sm">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-[#617589] dark:text-[#94a3b8] font-medium text-sm">Open Status</p>
+                        <span
+                            class="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 p-1 rounded">
+                            <span class="material-symbols-outlined text-[20px]">pending_actions</span>
+                        </span>
+                    </div>
+                    <p class="text-2xl font-bold text-[#111418] dark:text-white">{{ stats.open }}</p>
+                    <p class="text-[#617589] dark:text-[#94a3b8] text-xs font-medium mt-1">Requires attention</p>
+                </div>
+                <div
+                    class="bg-white dark:bg-[#1a2632] p-5 rounded-lg border border-[#e5e7eb] dark:border-[#2a3b4d] shadow-sm">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-[#617589] dark:text-[#94a3b8] font-medium text-sm">Resolved</p>
+                        <span class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 p-1 rounded">
+                            <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                        </span>
+                    </div>
+                    <p class="text-2xl font-bold text-[#111418] dark:text-white">{{ stats.resolved }}</p>
+                    <p class="text-green-600 text-xs font-medium mt-1 flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[16px]">trending_up</span> completion rate
+                    </p>
+                </div>
+                <div
+                    class="bg-white dark:bg-[#1a2632] p-5 rounded-lg border border-[#e5e7eb] dark:border-[#2a3b4d] shadow-sm border-l-4 border-l-red-500">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-[#617589] dark:text-[#94a3b8] font-medium text-sm">Escalated</p>
+                        <span class="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 p-1 rounded">
+                            <span class="material-symbols-outlined text-[20px]">warning</span>
+                        </span>
+                    </div>
+                    <p class="text-2xl font-bold text-[#111418] dark:text-white">{{ stats.escalated }}</p>
+                    <p class="text-red-600 text-xs font-medium mt-1">High priority items</p>
+                </div>
+            </div>
+            <!-- Priority Section -->
+            {% if priority_tickets %}
+            <section class="mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-[#111418] dark:text-white flex items-center gap-2">
+                        <span class="material-symbols-outlined text-red-500 fill-1">priority_high</span>
+                        Priority Attention Needed
+                    </h3>
+                </div>
+                <div
+                    class="bg-white dark:bg-[#1a2632] rounded-lg border border-[#e5e7eb] dark:border-[#2a3b4d] overflow-hidden shadow-sm">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr
+                                    class="bg-[#f9fafb] dark:bg-[#253341] border-b border-[#e5e7eb] dark:border-[#2a3b4d]">
+                                    <th
+                                        class="px-6 py-3 text-xs font-semibold text-[#617589] dark:text-[#94a3b8] uppercase tracking-wider">
+                                        ID</th>
+                                    <th
+                                        class="px-6 py-3 text-xs font-semibold text-[#617589] dark:text-[#94a3b8] uppercase tracking-wider">
+                                        Subject</th>
+                                    <th
+                                        class="px-6 py-3 text-xs font-semibold text-[#617589] dark:text-[#94a3b8] uppercase tracking-wider">
+                                        Status</th>
+                                    <th
+                                        class="px-6 py-3 text-xs font-semibold text-[#617589] dark:text-[#94a3b8] uppercase tracking-wider">
+                                        Assignee</th>
+                                    <th
+                                        class="px-6 py-3 text-xs font-semibold text-[#617589] dark:text-[#94a3b8] uppercase tracking-wider">
+                                        Priority</th>
+                                    <th
+                                        class="px-6 py-3 text-xs font-semibold text-[#617589] dark:text-[#94a3b8] uppercase tracking-wider text-right">
+                                        Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[#e5e7eb] dark:divide-[#2a3b4d]">
+                                {% for ticket in priority_tickets %}
+                                <tr class="hover:bg-[#f9fafb] dark:hover:bg-[#253341] transition-colors cursor-pointer"
+                                    onclick="window.location='{% url 'admin_ticket_detail' ticket.ComplaintId %}';">
+                                    <td class="px-6 py-4 text-sm font-medium text-primary">{{ ticket.ticket_id }}</td>
+                                    <td class="px-6 py-4 text-sm text-[#111418] dark:text-white font-semibold">
+                                        {{ticket.Description|truncatechars:40 }}</td>
+                                    <td class="px-6 py-4 text-sm text-[#617589] dark:text-[#94a3b8]">{{ ticket.Status }}
+                                    </td>
+                                    <td class="px-6 py-4 text-sm font-medium">{{ticket.AssignedTo|default:"Unassigned"}}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300">{{ticket.Priority
+                                            }}</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button class="text-sm font-medium text-primary hover:text-blue-700"
+                                            onclick="window.location='{% url 'admin_ticket_detail' ticket.ComplaintId %}';">Review</button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            {% endif %}
+            <!-- All Complaints Section -->
+            <section class="h-full">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
+                    <h3 class="text-lg font-bold text-[#111418] dark:text-white">All Complaints</h3>
+                    <div class="flex gap-2">
+                        <div class="relative">
+                            <select
+                                class="h-9 pl-3 pr-8 rounded-lg border border-[#d1d5db] dark:border-[#2a3b4d] bg-white dark:bg-[#1a2632] text-sm text-[#111418] dark:text-white focus:ring-primary focus:border-primary">
+                                <option>All Statuses</option>
+                                <option>Open</option>
+                                <option>In Progress</option>
+                                <option>Resolved</option>
+                            </select>
+                        </div>
+                        <div class="relative">
+                            <select
+                                class="h-9 pl-3 pr-8 rounded-lg border border-[#d1d5db] dark:border-[#2a3b4d] bg-white dark:bg-[#1a2632] text-sm text-[#111418] dark:text-white focus:ring-primary focus:border-primary">
+                                <option>All Channels</option>
+                                <option>Email</option>
+                                <option>Phone</option>
+                                <option>Chat</option>
+                            </select>
+                        </div>
+                        <!-- <button
+                            class="h-9 px-4 rounded-lg bg-primary text-white text-sm font-medium shadow-sm hover:bg-blue-600 transition-colors flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[18px]">add</span> New Complaint
+                        </button> -->
+                    </div>
+                </div>
+                <div
+                    class="bg-white dark:bg-[#1a2632] rounded-lg border border-[#e5e7eb] dark:border-[#2a3b4d] overflow-hidden shadow-sm">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr
+                                    class="bg-[#f9fafb] dark:bg-[#253341] border-b border-[#e5e7eb] dark:border-[#2a3b4d]">
+                                    <th
+                                        class="px-6 py-3 text-xs font-semibold text-[#617589] dark:text-[#94a3b8] uppercase tracking-wider w-10">
+                                        Channel</th>
+                                    <th
+                                        class="px-6 py-3 text-xs font-semibold text-[#617589] dark:text-[#94a3b8] uppercase tracking-wider">
+                                        Ticket ID</th>
+                                    <th
+                                        class="px-6 py-3 text-xs font-semibold text-[#617589] dark:text-[#94a3b8] uppercase tracking-wider">
+                                        Subject</th>
+                                    <th
+                                        class="px-6 py-3 text-xs font-semibold text-[#617589] dark:text-[#94a3b8] uppercase tracking-wider">
+                                        Assignee</th>
+                                    <th
+                                        class="px-6 py-3 text-xs font-semibold text-[#617589] dark:text-[#94a3b8] uppercase tracking-wider">
+                                        Status</th>
+                                    <th
+                                        class="px-6 py-3 text-xs font-semibold text-[#617589] dark:text-[#94a3b8] uppercase tracking-wider">
+                                        Updated</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[#e5e7eb] dark:divide-[#2a3b4d]">
+                                {% for ticket in complaints %}
+                                <tr class="hover:bg-[#f9fafb] dark:hover:bg-[#253341] transition-colors cursor-pointer {% if ticket.Status == 'Open' %}border-l-4 border-l-primary{% else %}border-l-4 border-l-transparent{% endif %}"
+                                    onclick="window.location='{% url 'admin_ticket_detail' ticket.ComplaintId %}';">
+                                    <td class="px-6 py-4">
+                                        {% if ticket.Channel == 'Phone' %}
+                                        <div
+                                            class="size-8 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-600 flex items-center justify-center">
+                                            <span class="material-symbols-outlined text-[18px]">call</span>
+                                        </div>
+                                        {% elif ticket.Channel == 'Chat' %}
+                                        <div
+                                            class="size-8 rounded-full bg-green-100 dark:bg-green-900/40 text-green-600 flex items-center justify-center">
+                                            <span class="material-symbols-outlined text-[18px]">chat</span>
+                                        </div>
+                                        {% else %}
+                                        <div
+                                            class="size-8 rounded-full bg-blue-100 dark:bg-blue-900/40 text-primary flex items-center justify-center">
+                                            <span class="material-symbols-outlined text-[18px]">mail</span>
+                                        </div>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-6 py-4 text-sm font-medium text-[#111418] dark:text-white">
+                                        {{ ticket.ticket_id }}</td>
+                                    <td class="px-6 py-4 text-sm text-[#111418] dark:text-white">
+                                        {{ ticket.Description|truncatechars:50 }}</td>
+                                    <td class="px-6 py-4">
+                                        {% if ticket.AssignedTo %}
+                                        <div class="flex items-center gap-2">
+                                            <div
+                                                class="size-6 rounded-full bg-green-200 flex items-center justify-center text-[10px] font-bold text-green-800">
+                                                {{ ticket.AssignedTo|slice:":2"|upper }}</div>
+                                            <span
+                                                class="text-sm text-[#617589] dark:text-[#94a3b8]">{{ticket.AssignedTo}}</span>
+                                        </div>
+                                        {% else %}
+                                        <span class="text-sm text-[#9ca3af] italic">Unassigned</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="px-2 py-1 text-xs font-semibold rounded-full {% if ticket.Status == 'Open' %}bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300{% elif ticket.Status == 'Resolved' %}bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300{% elif ticket.Status == 'Escalated' %}bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300{% else %}bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300{% endif %}">{{ticket.Status
+                                            }}</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-[#617589] dark:text-[#94a3b8]">
+                                        {{ticket.created_display }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    <script>
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function (event) {
+            const menu = document.getElementById('profileMenu');
+            const profileButton = menu.previousElementSibling;
+            if (!menu.contains(event.target) && !profileButton.contains(event.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>

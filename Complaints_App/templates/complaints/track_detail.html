@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>User Complaint Detail Page - CompResolve</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "primary-dark": "#0f6ac6",
+                        "background-light": "#f3f5f7",
+                        "background-dark": "#101922",
+                        "card-light": "#ffffff",
+                        "card-dark": "#1c2b3e",
+                        "text-main-light": "#111418",
+                        "text-main-dark": "#ffffff",
+                        "text-sec-light": "#617589",
+                        "text-sec-dark": "#94a3b8",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+                    boxShadow: {
+                        'soft': '0 2px 10px rgba(0, 0, 0, 0.03)',
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        :root {
+                {
+                % if Status=='Pending' %
+            }
+
+            --status-color: #ef4444;
+
+            /* Alert Red for Pending */
+                {
+                % else %
+            }
+
+            --status-color: #7dd3fc;
+
+            /* Calm Light Blue for others */
+                {
+                % endif %
+            }
+        }
+
+        .timeline-connector::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            bottom: -20px;
+            left: 20px;
+            width: 3px;
+            background: linear-gradient(to bottom,
+                    rgba(255, 255, 255, 0) 0%,
+                    var(--status-color) 50%,
+                    rgba(255, 255, 255, 0) 100%);
+            background-size: 100% 80px;
+            background-repeat: repeat-y;
+            animation: flow-move 1.5s linear infinite;
+            z-index: 0;
+            border-radius: 4px;
+        }
+
+        .timeline-connector::after {
+            content: '';
+            position: absolute;
+            top: 40px;
+            bottom: -20px;
+            left: 20px;
+            width: 3px;
+            background-color: var(--status-color);
+            opacity: 0.15;
+            z-index: -1;
+            border-radius: 4px;
+        }
+
+        @keyframes flow-move {
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 0 80px;
+            }
+        }
+
+        .timeline-item:last-child .timeline-connector::before,
+        .timeline-item:last-child .timeline-connector::after {
+            display: none;
+        }
+
+        .flow-status-icon {
+            background-color: white !important;
+            border-color: #e2e8f0 !important;
+            /* Neutral slate border */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            z-index: 10;
+        }
+
+        .dark .flow-status-icon {
+            background-color: #0f172a !important;
+            border-color: #1e293b !important;
+        }
+
+        /* Pulsing/Blinking ONLY when Pending */
+            {
+            % if Status=='Pending' %
+        }
+
+        .timeline-item:last-child .flow-status-icon {
+            animation: status-pulse 2.2s infinite;
+            border-color: var(--status-color) !important;
+            border-width: 3px;
+        }
+
+            {
+            % endif %
+        }
+
+        @keyframes status-pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+                transform: scale(1);
+            }
+
+            50% {
+                box-shadow: 0 0 20px 8px rgba(239, 68, 68, 0.2);
+                transform: scale(1.1);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-text-main-light dark:text-text-main-dark antialiased overflow-hidden">
+    <div class="flex h-screen w-full">
+        <aside
+            class="hidden lg:flex flex-col w-72 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shrink-0 h-screen sticky top-0 overflow-y-auto z-20">
+            <div class="flex items-center gap-3 px-6 py-6 border-b border-slate-100 dark:border-slate-800">
+                <div class="bg-primary/10 flex items-center justify-center rounded-lg size-10 text-primary">
+                    <span class="material-symbols-outlined text-2xl">token</span>
+                </div>
+                <div class="flex flex-col">
+                    <h1 class="text-slate-900 dark:text-white text-base font-bold leading-tight">CompResolve</h1>
+                    <p class="text-slate-500 dark:text-slate-400 text-xs font-normal">Ticket Details</p>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2 p-4">
+                <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+                    href="{% url 'user_home' %}">
+                    <span class="material-symbols-outlined text-[20px]">dashboard</span>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary group transition-colors"
+                    href="{% url 'track_complaints' %}">
+                    <span class="material-symbols-outlined text-[20px] font-medium">confirmation_number</span>
+                    <span class="text-sm font-semibold">Tickets</span>
+                </a>
+
+                <!--a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">history</span>
+<span class="text-sm font-medium">History</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="text-sm font-medium">Notifications</span>
+<span class="ml-auto bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded-full">1</span>
+</a-->
+            </div>
+            <div class="mt-auto flex flex-col gap-2 p-4 border-t border-slate-100 dark:border-slate-800">
+                <!--a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="text-sm font-medium">Support Center</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a-->
+                <!-- Profile trigger -->
+                <div class="relative" id="profileMenuWrapper">
+                    <!-- Profile trigger -->
+                    <button type="button" onclick="toggleProfileMenu()"
+                        class="w-full flex items-center gap-3 px-3 py-3 mt-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+
+                        <!-- Avatar -->
+                        <div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border border-slate-200 flex items-center justify-center bg-primary text-white font-bold shrink-0"
+                            data-alt="Profile picture of the user">
+                            {{ request.user.name|capfirst|slice:":1" }}
+                        </div>
+
+                        <!-- User info -->
+                        <div class="flex flex-col text-left overflow-hidden">
+                            <span class="text-sm font-semibold text-slate-900 dark:text-white truncate">
+                                {{ request.user.name|capfirst }} ({{ request.user.groups.0|title|default:"Customer" }})
+                            </span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 truncate">
+                                {{ request.user.email }}
+                            </span>
+                        </div>
+
+                        <!-- Chevron -->
+                        <span class="material-symbols-outlined ml-auto text-slate-400">
+                            expand_more
+                        </span>
+                    </button>
+
+                    <!-- 🔥 Dropdown opens UP (not down) -->
+                    <div id="profileMenu"
+                        class="absolute bottom-full mb-2 right-0 w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl hidden z-50">
+
+                        <a href="{% url 'logout' %}"
+                            class="flex items-center gap-2 px-4 py-3 text-sm text-red-600 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition">
+                            <span class="material-symbols-outlined text-[18px]">logout</span>
+                            Logout
+                        </a>
+                    </div>
+                </div>
+                <script>
+                    function toggleProfileMenu() {
+                        document.getElementById('profileMenu').classList.toggle('hidden');
+                    }
+
+                    document.addEventListener('click', function (e) {
+                        const wrapper = document.getElementById('profileMenuWrapper');
+                        const menu = document.getElementById('profileMenu');
+
+                        if (!wrapper.contains(e.target)) {
+                            menu.classList.add('hidden');
+                        }
+                    });
+                </script>
+
+
+        </aside>
+
+        <div class="flex-1 flex flex-col h-full relative overflow-hidden">
+            <!--header class="h-16 flex items-center justify-between px-6 bg-card-light dark:bg-card-dark border-b border-gray-200 dark:border-gray-800 shrink-0">
+            <div class="flex items-center gap-4 lg:hidden">
+                <button class="text-text-main-light dark:text-white">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <span class="font-bold text-lg">OmniSupport</span>
+            </div>
+            <div class="hidden lg:flex max-w-md w-full">
+                <div class="relative w-full text-text-sec-light focus-within:text-primary">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <span class="material-symbols-outlined">search</span>
+                    </div>
+                    <input class="block w-full h-10 pl-10 pr-3 py-2 border-none rounded-lg bg-background-light dark:bg-background-dark text-sm placeholder-gray-500 focus:ring-2 focus:ring-primary/50 transition-shadow" placeholder="Search ticket ID, customer, or content..." type="text"/>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button class="relative p-2 text-text-sec-light hover:text-primary transition-colors rounded-full hover:bg-background-light dark:hover:bg-gray-800">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white dark:border-card-dark"></span>
+                </button>
+                <div class="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-semibold border border-primary/20">
+                    Admin View
+                </div>
+            </div>
+        </header-->
+
+            <main class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-4 lg:p-8">
+                <div class="max-w-7xl mx-auto">
+                    <div class="mb-6">
+                        <nav aria-label="Breadcrumb" class="flex">
+                            <ol class="flex items-center space-x-2 text-sm">
+                                <li><a class="text-text-sec-light hover:text-primary transition-colors"
+                                        href="{% url 'track_complaints' %}">Tickets</a></li>
+                                <li><span class="text-gray-400">/</span></li>
+                                <li class="font-medium text-text-main-light dark:text-white">Complaint #{{complaint_id}}
+                                </li>
+                            </ol>
+                        </nav>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 space-y-6">
+                            <div
+                                class="bg-card-light dark:bg-card-dark rounded-xl shadow-soft p-6 border border-gray-200 dark:border-gray-800">
+                                <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                                    <div>
+                                        <h1
+                                            class="text-2xl md:text-3xl font-extrabold text-text-main-light dark:text-white tracking-tight">
+                                            {{Subject|default:"Complaint Title"}}</h1>
+                                        <div
+                                            class="flex items-center gap-3 mt-2 text-xs font-semibold text-text-sec-light uppercase tracking-wider">
+                                            <span># ID: {{ complaint_id }}</span>
+                                            <span class="text-gray-300">|</span>
+                                            <div class="flex items-center gap-1">
+                                                <span
+                                                    class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                                CREATED: {{ CreatedAt }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span
+                                        class="inline-block min-w-max px-4 py-1 rounded-full text-xs font-bold capitalize bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 border border-blue-200 dark:border-blue-800 self-start">
+                                        {{ Status }}
+                                    </span>
+                                </div>
+
+                                <div
+                                    class="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-gray-100 dark:border-gray-800 pt-6">
+                                    <div class="flex gap-3">
+                                        <button
+                                            onclick="prepopulateComment('I would like to request a status update on this ticket.')"
+                                            class="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary-dark shadow-sm transition-colors">
+                                            <span class="material-symbols-outlined text-[20px]">history</span>
+                                            Request Update
+                                        </button>
+                                        {% if Status == 'Resolved' %}
+                                        <button
+                                            class="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary-dark shadow-sm transition-colors">
+                                            <span class="material-symbols-outlined text-[20px]">refresh</span>
+                                            <a href="{% url 'reopen_ticket' complaint_id=complaint_id %}">Reopen
+                                                Ticket</a>
+                                        </button>
+                                        {% endif %}
+                                        {% if Status != 'Closed' and Status != 'Resolved' %}
+                                        <button
+                                            class="flex items-center gap-2 px-5 py-2.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-lg text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                                            <span
+                                                class="material-symbols-outlined text-[20px] text-green-600">check_circle</span>
+                                            <a href="{% url 'close_complaint' old_complaint_id=complaint_id %}">Mark as
+                                                Resolved</a>
+                                        </button>
+                                        {% endif %}
+
+                                    </div>
+                                    {% if elapsed_hours > 48 and Status != 'Closed' and Status != 'Resolved' and Status != 'Escalated' %}
+                                    <a href="{% url 'escalate_complaint' complaint_id=complaint_id %}">
+                                        <button
+                                            class="flex items-center gap-2 px-5 py-2.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/30 rounded-lg text-sm font-semibold hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors ml-auto">
+                                            <span class="material-symbols-outlined text-[20px]">priority_high</span>
+                                            Escalate
+                                        </button>
+                                    </a>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+
+                            <!-- Case Description -->
+                            <div
+                                class="bg-card-light dark:bg-card-dark rounded-xl shadow-soft p-6 border border-gray-200 dark:border-gray-800">
+                                <div class="flex items-center gap-2 mb-4">
+                                    <span class="material-symbols-outlined text-primary">description</span>
+                                    <h3
+                                        class="text-sm font-extrabold text-text-main-light dark:text-white camelcase tracking-wide">
+                                        Case Description</h3>
+                                </div>
+                                <div
+                                    class="prose prose-sm dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
+                                    <p>{{ Description }}</p>
+                                    <p class="mt-2 text-sm text-gray-500 italic">{{ case_urgency }}</p>
+                                </div>
+                                <div class="mt-6">
+                                    {% if tags %}
+                                    <div class="flex flex-wrap gap-2.5">
+                                        {% for tag in tags %}
+                                        {% if tag != '' %}
+                                        <div class="group relative">
+                                            <span
+                                                class="inline-flex items-center px-4 py-1.5 bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-light rounded-full text-[11px] font-black uppercase tracking-wider border border-primary/20 dark:border-primary/40 transition-all duration-300 hover:scale-105 hover:bg-primary/20 hover:shadow-lg hover:shadow-primary/20 cursor-default">
+                                                <span
+                                                    class="size-1.5 rounded-full bg-primary mr-2 animate-pulse"></span>
+                                                {{ tag }}
+                                            </span>
+                                        </div>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    <div class="flex items-center gap-2 text-slate-400 italic text-sm">
+                                        <span class="material-symbols-outlined text-[18px]">label_off</span>
+                                        <span>No intent tags detected</span>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+
+                            <!-- Activity Timeline -->
+                            <div
+                                class="bg-card-light dark:bg-card-dark rounded-xl shadow-soft p-6 border border-gray-200 dark:border-gray-800">
+                                <div class="flex items-center justify-between mb-8">
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-primary">history</span>
+                                        <h3
+                                            class="text-sm font-extrabold text-text-main-light dark:text-white camelcase tracking-wide">
+                                            Activity Timeline</h3>
+                                    </div>
+                                    <button onclick="toggleUserTimelineSort()" title="Sort Timeline"
+                                        class="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 p-1.5 rounded-lg transition-colors">
+                                        <span class="material-symbols-outlined text-[18px]">swap_vert</span>
+                                    </button>
+                                </div>
+                                <div id="userTimelineContainer" class="space-y-2 relative pl-2 flex flex-col">
+                                    {% for action in actions %}
+                                    <div class="timeline-item relative flex gap-6 pb-12">
+                                        <!-- Flow Logic Connector -->
+                                        <div class="timeline-connector flex flex-col items-center">
+                                            <div class="size-11 rounded-full border-2 flow-status-icon flex items-center justify-center shrink-0 z-10 transition-all duration-500
+                                                {% if action.ActionType|lower == 'user' %}
+                                                    bg-blue-50 dark:bg-blue-900/20 border-blue-500/20
+                                                {% elif action.ActionType|lower == 'admin' %}
+                                                    bg-purple-50 dark:bg-purple-900/20 border-purple-500/20
+                                                {% elif action.ActionType|lower == 'system process' or action.ActionType|lower == 'system' %}
+                                                    bg-indigo-50 dark:bg-indigo-900/20 border-indigo-500/20 shadow-[0_0_10px_rgba(79,70,229,0.3)]
+                                                {% else %}
+                                                    bg-slate-50 dark:bg-slate-900/20 border-slate-500/20
+                                                {% endif %}">
+
+                                                <span class="material-symbols-outlined text-[20px] 
+                                                    {% if action.ActionType|lower == 'user' %}
+                                                        text-blue-600
+                                                    {% elif action.ActionType|lower == 'reply' %}
+                                                        text-purple-600
+                                                    {% elif action.ActionType|lower == 'system process' or action.ActionType|lower == 'system' %}
+                                                        text-orange-600
+                                                    {% else %}
+                                                        text-slate-500
+                                                    {% endif %}">
+                                                    {% if forloop.first and action.Status == 'Open' %}
+                                                    add_circle
+                                                    {% elif action.ActionType|lower == 'user' %}
+                                                    person
+                                                    {% elif action.ActionType|lower == 'reply' %}
+                                                    support_agent
+                                                    {% elif action.ActionType|lower == 'system process' or action.ActionType|lower == 'system' %}
+                                                    settings
+                                                    {% else %}
+                                                    help_outline
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Content Block -->
+                                        <div class="flex-1 min-w-0">
+                                            <div
+                                                class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 mb-2">
+                                                <div class="flex items-center gap-3">
+                                                    <h4 class="text-base font-bold text-slate-900 dark:text-white">
+                                                        {% if forloop.first and action.Status == 'Open' %}
+                                                        Ticket Created
+                                                        {% elif "assigned" in action.ActionDescription|lower or "reassigned" in action.ActionDescription|lower %}
+                                                        Agent assignment
+                                                        {% elif action.ActionType|lower == 'reply' %}
+                                                        {{ action.ActionBy|default:"Agent" }}
+                                                        {% elif action.ActionType|lower == 'user' %}
+                                                        Customer Update
+                                                        {% else %}
+                                                        Status Update
+                                                        {% endif %}
+                                                    </h4>
+                                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider
+                                                        {% if action.Status == 'Open' %}
+                                                            bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400
+                                                        {% elif action.Status == 'In Progress' %}
+                                                            bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300
+                                                        {% elif action.Status == 'Pending' %}
+                                                            bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300
+                                                        {% elif action.Status == 'Resolved' %}
+                                                            bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300
+                                                        {% else %}
+                                                            bg-slate-100 text-slate-500
+                                                        {% endif %}">
+                                                        {{ action.Status }}
+                                                    </span>
+                                                </div>
+                                                <span
+                                                    class="text-[11px] font-bold text-slate-400 uppercase tracking-tighter">
+                                                    {{ action.ActionCreatedAt }}
+                                                </span>
+                                            </div>
+
+                                            <!-- Card Description Box -->
+                                            <div
+                                                class="relative bg-slate-50/50 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800 rounded-xl p-4 transition-all hover:shadow-sm">
+                                                <div class="flex gap-4">
+                                                    {% if action.ActionType|lower == 'admin' %}
+                                                    <div class="bg-primary/10 size-10 rounded-full flex items-center justify-center shrink-0 border border-primary/20 bg-cover bg-center"
+                                                        style="background-image: url('https://ui-avatars.com/api/?name={{ action.ActionBy|urlencode }}&background=0284c7&color=fff');">
+                                                    </div>
+                                                    {% endif %}
+                                                    <div class="flex-1">
+                                                        <p
+                                                            class="text-sm leading-relaxed text-slate-600 dark:text-slate-400 font-medium">
+                                                            {% if action.ActionType|lower == 'admin' %}
+                                                            Assigned to <span
+                                                                class="font-bold text-slate-900 dark:text-white">{{ action.ActionBy }}</span>.
+                                                            {% endif %}
+                                                            {{ action.ActionDescription }}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <script>
+                                    function toggleUserTimelineSort() {
+                                        const container = document.getElementById('userTimelineContainer');
+                                        const items = Array.from(container.children);
+                                        items.reverse();
+                                        items.forEach(item => container.appendChild(item));
+                                    }
+                                </script>
+
+                                <!-- Add Comment Form (New) -->
+                                <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
+                                    <form action="{% url 'add_comment' complaint_id %}" method="POST" class="space-y-4">
+                                        {% csrf_token %}
+                                        <div class="relative group">
+                                            <textarea name="comment" rows="3"
+                                                placeholder="Add a comment or reply to this ticket..."
+                                                class="w-full rounded-xl border-gray-200 dark:border-gray-700 dark:bg-slate-900/50 dark:text-white focus:ring-primary/50 focus:border-primary text-sm shadow-sm transition-all resize-none px-4 py-3 placeholder:text-gray-400 bg-gray-50/50"
+                                                required></textarea>
+                                        </div>
+                                        <div class="flex justify-end">
+                                            <button type="submit"
+                                                class="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-full text-xs font-bold transition-all shadow-lg shadow-primary/20 active:scale-95 flex items-center gap-2">
+                                                <span class="material-symbols-outlined text-[18px]">send</span>
+                                                Post Comment
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <script>
+                                    function prepopulateComment(text) {
+                                        const textarea = document.querySelector('textarea[name="comment"]');
+                                        if (!textarea) return;
+
+                                        // 1. Slow smooth scroll to the comment box
+                                        textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                                        // 2. Clear existing text
+                                        textarea.value = "";
+                                        textarea.focus();
+
+                                        // 3. Word-by-word typewriter effect (Completes in ~1 second)
+                                        const words = text.split(' ');
+                                        const totalDuration = 1000; // 1 second
+                                        const interval = totalDuration / words.length;
+                                        let currentWordIndex = 0;
+
+                                        const typewriterInterval = setInterval(() => {
+                                            if (currentWordIndex < words.length) {
+                                                textarea.value += (currentWordIndex === 0 ? "" : " ") + words[currentWordIndex];
+                                                // Trigger height adjustment if any auto-resize logic exists
+                                                textarea.dispatchEvent(new Event('input'));
+                                                currentWordIndex++;
+                                            } else {
+                                                clearInterval(typewriterInterval);
+                                            }
+                                        }, interval);
+                                    }
+                                </script>
+                            </div>
+                        </div>
+
+                        <!-- Ticket Details -->
+                        <div class="space-y-6">
+                            <!-- AI Assistant / Requested Action sidebar box -->
+                            {% if Status == 'Pending' %}
+                            <div
+                                class="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10 rounded-xl shadow-soft p-6 border border-amber-200 dark:border-amber-800 relative overflow-hidden group">
+                                <div
+                                    class="absolute -right-4 -top-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
+                                    <span class="material-symbols-outlined text-7xl text-amber-500">auto_awesome</span>
+                                </div>
+                                <div class="relative z-10">
+                                    <div class="flex items-center gap-2 mb-4">
+                                        <div
+                                            class="size-8 rounded-lg bg-amber-500 flex items-center justify-center text-white shadow-lg shadow-amber-500/20">
+                                            <span class="material-symbols-outlined text-[20px]">psychology</span>
+                                        </div>
+                                        <h3
+                                            class="text-sm font-black text-amber-900 dark:text-amber-100 uppercase tracking-widest">
+                                            AI Assistant</h3>
+                                    </div>
+
+                                    <div class="space-y-4">
+                                        <div>
+                                            <p
+                                                class="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-1.5">
+                                                Action Required</p>
+                                            <h4 class="text-lg font-black text-slate-900 dark:text-white leading-tight">
+                                                {{ PendingActionHeading|default:"Update Required" }}
+                                            </h4>
+                                        </div>
+
+                                        <p
+                                            class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+                                            {{ PendingActionMessage|default:"Our agent is waiting for your response.  Please provide the requested details using the chat box below to move your case forward." }}
+                                        </p>
+
+                                        <div class="pt-2">
+                                            <button
+                                                onclick="prepopulateComment('Responding to the request for details: ')"
+                                                class="w-full py-2.5 bg-white dark:bg-slate-800 border-2 border-amber-200 dark:border-amber-700 text-amber-700 dark:text-amber-300 rounded-lg text-sm font-bold hover:bg-amber-50 dark:hover:bg-amber-900/30 transition-all flex items-center justify-center gap-2">
+                                                <span class="material-symbols-outlined text-[18px]">reply</span>
+                                                Respond Now
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div
+                                class="bg-card-light dark:bg-card-dark rounded-xl shadow-soft p-6 border border-gray-200 dark:border-gray-800">
+                                <h3
+                                    class="text-sm font-extrabold text-text-main-light dark:text-white camelcase tracking-wide mb-6">
+                                    Ticket Details</h3>
+                                <div class="space-y-6">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs font-bold text-text-sec-light  tracking-wider">Assigned
+                                            to</span>
+                                        <div
+                                            class="flex items-center gap-1 text-orange-600 dark:text-orange-500 font-bold text-sm">
+                                            <span>{{ AssignedTo|default:"Unassigned" }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="h-px bg-gray-100 dark:bg-gray-800"></div>
+                                    <div class="flex items-center justify-between">
+                                        <span
+                                            class="text-xs font-bold text-text-sec-light  tracking-wider">Channel</span>
+                                        <span class="text-sm font-bold text-text-main-light dark:text-white">Web</span>
+                                    </div>
+                                    <div class="h-px bg-gray-100 dark:bg-gray-800"></div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs font-bold text-text-sec-light  tracking-wider">Last
+                                            Updated</span>
+                                        <span
+                                            class="text-sm font-bold text-text-main-light dark:text-white">{{last_updated|default:"Just now" }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- Assigned Agent >
+                    <div class="bg-card-light dark:bg-card-dark rounded-xl shadow-soft p-6 border border-gray-200 dark:border-gray-800">
+                        <h3 class="text-sm font-extrabold text-text-main-light dark:text-white  tracking-wide mb-6">Assigned Agent</h3>
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="size-12 rounded-full bg-cover bg-center border-2 border-white dark:border-card-dark shadow-sm relative" style="background-image: url('{{ agent_profile_url }}');">
+                                <span class="absolute bottom-0 right-0 size-3 bg-green-500 border-2 border-white dark:border-card-dark rounded-full"></span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-text-main-light dark:text-white">AgentName</h4>
+                                <p class="text-xs font-medium text-text-sec-light  tracking-wide mt-0.5">L1 Admin</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button class="py-2 px-4 border border-gray-200 dark:border-gray-700 rounded-lg text-xs font-bold text-text-sec-light uppercase tracking-wide hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                Profile
+                            </button>
+                            <button class="py-2 px-4 border border-gray-200 dark:border-gray-700 rounded-lg text-xs font-bold text-text-sec-light uppercase tracking-wide hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                Message
+                            </button>
+                        </div>
+                    </div-->
+
+
+                            <!-- Attachments -->
+                            {% if attachments %}
+                            <div
+                                class="bg-card-light dark:bg-card-dark rounded-xl shadow-soft p-6 border border-gray-200 dark:border-gray-800">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3
+                                        class="text-sm font-extrabold text-text-main-light dark:text-white uppercase tracking-wide">
+                                        Attachments</h3>
+                                    <span
+                                        class="bg-gray-100 dark:bg-gray-800 text-xs font-bold px-2 py-0.5 rounded-full text-gray-600 dark:text-gray-400">{{attachments_count}}</span>
+                                </div>
+                                <div class="space-y-3">
+                                    {% for attachment in attachments %}
+                                    <div
+                                        class="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg transition-colors group">
+                                        <div
+                                            class="size-8 rounded bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center shrink-0">
+                                            <!-- Display file name only -->
+                                            <span class="material-symbols-outlined text-[18px]">attachment</span>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p
+                                                class="text-sm font-medium text-text-main-light dark:text-white truncate">
+                                                {{ attachment }}</p>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+
+</html>

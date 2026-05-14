@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Track Tickets</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        table {
+            table-layout: fixed;
+            /* Ensure equal column width distribution */
+            width: 100%;
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            /* Consistent padding for all columns */
+            text-align: left;
+            /* Ensures proper alignment */
+        }
+
+        th {
+            background-color: #f9fafb;
+        }
+
+        td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        td span {
+            display: block;
+            /* Prevent content from overflowing */
+        }
+
+        /* Reduce space between Submitted On and Action columns */
+        th:nth-child(1),
+        td:nth-child(1) {
+            width: 150px;
+            /* Set a specific width for 'Submitted On' */
+        }
+
+        th:nth-child(3),
+        td:nth-child(3) {
+            width: 190px;
+            /* Set a specific width for 'Submitted On' */
+        }
+
+        th:nth-child(4),
+        td:nth-child(4) {
+            width: 150px;
+            /* Set a specific width for 'Submitted On' */
+        }
+
+        th:nth-child(5),
+        td:nth-child(5) {
+            width: 120px;
+            /* Set a specific width for 'Action' */
+            padding-right: -9px;
+            /* Reduce padding on Action column */
+        }
+
+        /* Optional: Adjust the space in the last column (Action) */
+        td:last-child,
+        th:last-child {
+            padding-right: -4px;
+            /* Reduce padding for Action column */
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased">
+    <div class="relative flex min-h-screen w-full flex-row overflow-hidden">
+        <aside
+            class="hidden lg:flex flex-col w-72 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shrink-0 h-screen sticky top-0 overflow-y-auto z-20">
+            <div class="flex items-center gap-3 px-6 py-6 border-b border-slate-100 dark:border-slate-800">
+                <div class="bg-primary/10 flex items-center justify-center rounded-lg size-10 text-primary">
+                    <span class="material-symbols-outlined text-2xl">token</span>
+                </div>
+                <div class="flex flex-col">
+                    <h1 class="text-slate-900 dark:text-white text-base font-bold leading-tight">CompResolve</h1>
+                    <p class="text-slate-500 dark:text-slate-400 text-xs font-normal">Track Tickets</p>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2 p-4">
+                <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+                    href="{% url 'user_home' %}">
+                    <span class="material-symbols-outlined text-[20px]">dashboard</span>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+                <a
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary group transition-colors">
+                    <span class="material-symbols-outlined text-[20px]" data-weight="fill">confirmation_number</span>
+                    <span class="text-sm font-semibold">Tickets</span>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+                    href="{% url 'user_transactions' %}">
+                    <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+                    <span class="text-sm font-medium">Transactions</span>
+                </a>
+                <!--a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">history</span>
+<span class="text-sm font-medium">History</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="text-sm font-medium">Notifications</span>
+<span class="ml-auto bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded-full">1</span>
+</a-->
+            </div>
+            <div class="mt-auto flex flex-col gap-2 p-4 border-t border-slate-100 dark:border-slate-800">
+                <!--a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="text-sm font-medium">Support Center</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a-->
+                <!-- Profile trigger -->
+                <div class="relative" id="profileMenuWrapper">
+                    <!-- Profile trigger -->
+                    <button type="button" onclick="toggleProfileMenu()"
+                        class="w-full flex items-center gap-3 px-3 py-3 mt-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+
+                        <!-- Avatar -->
+                        <div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border border-slate-200 flex items-center justify-center bg-primary text-white font-bold shrink-0"
+                            data-alt="Profile picture of the user">
+                            {{ request.user.name|capfirst|slice:":1" }}
+                        </div>
+
+                        <!-- User info -->
+                        <div class="flex flex-col text-left overflow-hidden">
+                            <span class="text-sm font-semibold text-slate-900 dark:text-white truncate">
+                                {{ request.user.name|capfirst }} ({{ request.user.groups.0|title|default:"Customer" }})
+                            </span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 truncate">
+                                {{ request.user.email }}
+                            </span>
+                        </div>
+
+                        <!-- Chevron -->
+                        <span class="material-symbols-outlined ml-auto text-slate-400">
+                            expand_more
+                        </span>
+                    </button>
+
+                    <!-- 🔥 Dropdown opens UP (not down) -->
+                    <div id="profileMenu"
+                        class="absolute bottom-full mb-2 right-0 w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl hidden z-50">
+
+                        <a href="{% url 'logout' %}"
+                            class="flex items-center gap-2 px-4 py-3 text-sm text-red-600 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition">
+                            <span class="material-symbols-outlined text-[18px]">logout</span>
+                            Logout
+                        </a>
+                    </div>
+                </div>
+                <script>
+                    function toggleProfileMenu() {
+                        document.getElementById('profileMenu').classList.toggle('hidden');
+                    }
+
+                    document.addEventListener('click', function (e) {
+                        const wrapper = document.getElementById('profileMenuWrapper');
+                        const menu = document.getElementById('profileMenu');
+
+                        if (!wrapper.contains(e.target)) {
+                            menu.classList.add('hidden');
+                        }
+                    });
+                </script>
+
+        </aside>
+        <main class="flex-1 flex flex-col min-w-0 overflow-y-auto h-screen">
+            <div
+                class="lg:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-10">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">token</span>
+                    <h1 class="font-bold text-lg">CompResolve</h1>
+                </div>
+                <button class="text-slate-500">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+            </div>
+            <div class="flex flex-col gap-8 p-4 md:p-8 lg:p-10 max-w-7xl mx-auto w-full">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex flex-col gap-1">
+                        <h2 class="text-slate-900 dark:text-white text-2xl md:text-3xl font-bold tracking-tight">Track
+                            Complaints</h2>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm md:text-base">Track the status of your
+                            registered tickets below.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+
+                        <a href="{% url 'register_complaint' %}"
+                            class="flex items-center gap-2 px-4 py-2.5 bg-primary hover:bg-blue-600 text-white rounded-lg text-sm font-semibold shadow-md shadow-blue-500/20 transition-all active:scale-95">
+                            <span class="material-symbols-outlined text-[20px]">add</span>
+                            <span>Register New Complaint</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Total Complaints Card -->
+                    <div id="card-all" onclick="filterComplaints('all')"
+                        class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col gap-4 cursor-pointer transition-all duration-200 hover:ring-2 hover:ring-blue-500 hover:opacity-100 group">
+                        <div class="flex items-center justify-between">
+                            <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">My Total Complaints</p>
+                            <span
+                                class="bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 p-1.5 rounded-md material-symbols-outlined text-[20px]">folder</span>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-slate-900 dark:text-white">{{ total_complaints }}</p>
+                            <div class="flex items-center gap-1 mt-1">
+                                <span class="text-slate-400 dark:text-slate-500 text-xs font-medium">Lifetime
+                                    total</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pending Card -->
+                    <div id="card-pending" onclick="filterComplaints('pending')"
+                        class="bg-white dark:bg-slate-800 p-5 rounded-xl border-l-4 border-red-500 border-y border-r border-slate-200 dark:border-slate-700 shadow-sm flex flex-col gap-4 cursor-pointer transition-all duration-200 hover:ring-2 hover:ring-red-500 hover:opacity-100 group">
+                        <div class="flex items-center justify-between">
+                            <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Pending</p>
+                            <span
+                                class="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 p-1.5 rounded-md material-symbols-outlined text-[20px]">error</span>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-slate-900 dark:text-white">{{open_pending_count}}</p>
+                            <div class="flex items-center gap-1 mt-1">
+                                <span class="material-symbols-outlined text-red-600 text-[16px]">priority_high</span>
+                                <span class="text-red-600 text-xs font-medium">Action Required</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- In Progress Card -->
+                    <div id="card-inprogress" onclick="filterComplaints('in progress')"
+                        class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col gap-4 cursor-pointer transition-all duration-200 hover:ring-2 hover:ring-amber-500 hover:opacity-100 group">
+                        <div class="flex items-center justify-between">
+                            <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">In Progress</p>
+                            <span
+                                class="bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 p-1.5 rounded-md material-symbols-outlined text-[20px]">pending</span>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-slate-900 dark:text-white">{{in_progress_count}}</p>
+                            <div class="flex items-center gap-1 mt-1">
+                                <span class="text-amber-600 dark:text-amber-500 text-xs font-medium">Being
+                                    reviewed</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Closed/Resolved Card -->
+                    <div id="card-resolved" onclick="filterComplaints('resolved')"
+                        class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col gap-4 cursor-pointer transition-all duration-200 hover:ring-2 hover:ring-green-500 hover:opacity-100 group">
+                        <div class="flex items-center justify-between">
+                            <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Closed / Resolved</p>
+                            <span
+                                class="bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 p-1.5 rounded-md material-symbols-outlined text-[20px]">check_circle</span>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-slate-900 dark:text-white">{{closed_resolved_count}}</p>
+                            <div class="flex items-center gap-1 mt-1">
+                                <span class="text-green-600 text-xs font-medium">Satisfactory resolution</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col">
+                    <div
+                        class="p-5 border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">My Complaints</h3>
+                        <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                            <div class="relative group">
+                                <!--div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-400 text-[20px]">search</span>
+</div>
+<input class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary block w-full sm:w-64 pl-10 p-2.5 placeholder-slate-400" placeholder="Search by ID or Subject..." type="text"/>
+</div>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-400 text-[20px]">filter_list</span>
+</div-->
+                                <!--select class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary block w-full sm:w-40 pl-10 p-2.5 cursor-pointer">
+<option>All Status</option>
+<option>Open</option>
+<option>In Progress</option>
+<option>Resolved</option>
+</select-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-sm text-left text-slate-500 dark:text-slate-400"
+                            style="table-layout: fixed;">
+                            <thead
+                                class="text-xs text-slate-700 uppercase bg-slate-50 dark:bg-slate-700 dark:text-slate-300">
+                                <tr>
+                                    <th class="px-6 py-4 font-semibold" scope="col" style="min-width: 120px;">Complaint
+                                        ID</th>
+                                    <th class="px-6 py-4 font-semibold" scope="col" style="min-width: 200px;">
+                                        Description</th>
+                                    <th class="px-6 py-4 font-semibold" scope="col">Status</th>
+                                    <th class="px-6 py-4 font-semibold" scope="col">Submitted On</th>
+                                    <th class="px-6 py-4 text-right font-semibold" scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            {% if total_complaints == 0 %}
+                            <div
+                                class="flex flex-col items-center justify-center p-12 text-center bg-white dark:bg-slate-800 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 shadow-sm min-h-[400px]">
+                                <div class="mb-6 bg-slate-50 dark:bg-slate-700/50 p-6 rounded-full">
+                                    <span
+                                        class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-6xl">content_paste_off</span>
+                                </div>
+                                <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">No past complaints
+                                    found</h3>
+                                <p class="text-slate-500 dark:text-slate-400 text-sm max-w-sm mx-auto mb-6">
+                                    It looks like you haven't submitted any complaints yet. If you're experiencing an
+                                    issue, we're here to help.
+                                </p>
+                                <a href="{% url 'register_complaint' %}"
+                                    class="flex items-center gap-2 px-4 py-2.5 bg-primary hover:bg-blue-600 text-white rounded-lg text-sm font-semibold shadow-md shadow-blue-500/20 transition-all active:scale-95">
+                                    <span class="material-symbols-outlined text-[20px]">add</span>
+                                    <span>Register New Complaint</span>
+                                </a>
+                            </div>
+                            {% endif %}
+
+                            <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+                                {% for complaint in complaints %}
+                                <tr data-status="{{ complaint.Status|lower }}"
+                                    class="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                                    <td class="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap">
+                                        {{ complaint.ComplaintId }}
+                                    </td>
+                                    <td class="px-6 py-4">
+
+
+                                        <div class="flex items-center gap-1.5 mt-1 text-slate-500 text-xs">
+                                            <span class="line-clamp-2">{{ complaint.Description }}</span>
+                                        </div>
+
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2">
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold
+                    {% if complaint.Status|lower == 'in progress' %} bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300
+                    {% elif complaint.Status|lower == 'resolved' %} bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300
+                    {% elif complaint.Status|lower == 'closed' %} bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300
+                    {% elif complaint.Status|lower == 'pending' %} bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300
+                    {% endif %}">
+                                                <span class="w-1.5 h-1.5 rounded-full
+                        {% if complaint.Status|lower == 'in progress' %} bg-blue-500
+                        {% elif complaint.Status|lower == 'resolved' %} bg-green-500
+                        {% elif complaint.Status|lower == 'closed' %} bg-green-500
+                        {% elif complaint.Status|lower == 'pending' %} bg-orange-500
+                        {% endif %}">
+                                                </span>
+                                                {{ complaint.Status|capfirst }}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        {{ complaint.CreatedAt }}
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <a href="{% url 'track_complaint_detail' complaint.ComplaintId %}"
+                                            class="text-primary text-sm font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                                            View
+                                            <span class="material-symbols-outlined text-base">arrow_forward</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    </table>
+                </div>
+
+        </main>
+
+        <script>
+            function filterComplaints(status) {
+                const rows = document.querySelectorAll('tbody tr');
+                const cards = {
+                    'all': document.getElementById('card-all'),
+                    'pending': document.getElementById('card-pending'),
+                    'in progress': document.getElementById('card-inprogress'),
+                    'resolved': document.getElementById('card-resolved')
+                };
+
+                // Helper to manage card classes
+                const updateCardStyles = (activeKey) => {
+                    Object.keys(cards).forEach(key => {
+                        const card = cards[key];
+                        card.classList.remove('ring-2', 'ring-blue-500', 'ring-red-500', 'ring-amber-500', 'ring-green-500', 'opacity-50');
+
+                        if (activeKey === 'all') {
+                            // Default state: No visual selection, full opacity
+                            return;
+                        }
+
+                        if (key === activeKey) {
+                            // Active State
+                            card.classList.remove('opacity-50');
+                            if (key === 'pending') card.classList.add('ring-2', 'ring-red-500');
+                            else if (key === 'in progress') card.classList.add('ring-2', 'ring-amber-500');
+                            else if (key === 'resolved') card.classList.add('ring-2', 'ring-green-500');
+                            // Note: 'all' doesn't get a ring when specific filters are active, usually.
+                        } else {
+                            // Inactive State
+                            card.classList.add('opacity-50');
+                        }
+                    });
+                };
+
+                updateCardStyles(status);
+
+                // Filter Rows
+                rows.forEach(row => {
+                    const rowStatus = row.getAttribute('data-status');
+                    if (status === 'all') {
+                        row.style.display = '';
+                    } else if (status === 'resolved') {
+                        if (rowStatus === 'resolved' || rowStatus === 'closed') {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    } else {
+                        if (rowStatus === status) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    }
+                });
+            }
+
+            // Auto-filter based on URL parameter
+            window.onload = function () {
+                const urlParams = new URLSearchParams(window.location.search);
+                const filter = urlParams.get('filter');
+                if (filter) {
+                    filterComplaints(filter);
+                }
+            };
+        </script>
+        <!--div class="flex items-center justify-between p-4 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-b-xl">
+<span class="text-sm text-slate-500 dark:text-slate-400">
+                            Showing <span class="font-semibold text-slate-900 dark:text-white">1-5</span> of <span class="font-semibold text-slate-900 dark:text-white">12</span>
+</span>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1 text-sm font-medium text-slate-500 bg-white dark:bg-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 disabled:opacity-50" disabled="">Previous</button>
+<button class="px-3 py-1 text-sm font-medium text-slate-500 bg-white dark:bg-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600">Next</button>
+</div>
+</div>
+</div-->
+        </main>
+    </div>
+
+</body>
+
+</html>

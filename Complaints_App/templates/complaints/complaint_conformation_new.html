@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AI Resolution for Complaint</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-[#111418] dark:text-white font-display">
+    <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+        <!-- Top Navigation -->
+
+        <!-- Main Layout -->
+        <div class="flex flex-1">
+            <!-- Sidebar -->
+            <aside
+                class="hidden lg:flex flex-col w-72 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shrink-0 h-screen sticky top-0 overflow-y-auto z-20">
+                <div class="flex items-center gap-3 px-6 py-6 border-b border-slate-100 dark:border-slate-800">
+                    <div class="bg-primary/10 flex items-center justify-center rounded-lg size-10 text-primary">
+                        <span class="material-symbols-outlined text-2xl">token</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <h1 class="text-slate-900 dark:text-white text-base font-bold leading-tight">CompResolve</h1>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs font-normal">Register Ticket</p>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2 p-4">
+                    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+                        href="{% url 'user_home' %}">
+                        <span class="material-symbols-outlined text-[20px]">dashboard</span>
+                        <span class="text-sm font-medium">Dashboard</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+                        href="{% url 'track_complaints' %}">
+                        <span class="material-symbols-outlined text-[20px]">confirmation_number</span>
+                        <span class="text-sm font-medium">Tickets</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+                        href="{% url 'user_transactions' %}">
+                        <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+                        <span class="text-sm font-medium">Transactions</span>
+                    </a>
+                    <!--a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+                    href="#">
+                    <span class="material-symbols-outlined text-[20px]">history</span>
+                    <span class="text-sm font-medium">History</span>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+                    href="#">
+                    <span class="material-symbols-outlined text-[20px]">notifications</span>
+                    <span class="text-sm font-medium">Notifications</span>
+                    <span class="ml-auto bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded-full">1</span>
+                </a-->
+                </div>
+                <div class="mt-auto flex flex-col gap-2 p-4 border-t border-slate-100 dark:border-slate-800">
+                    <!--a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+                    href="#">
+                    <span class="material-symbols-outlined text-[20px]">help</span>
+                    <span class="text-sm font-medium">Support Center</span>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+                    href="#">
+                    <span class="material-symbols-outlined text-[20px]">settings</span>
+                    <span class="text-sm font-medium">Settings</span>
+                </a-->
+                    <div class="relative" id="profileMenuWrapper">
+                        <!-- Profile trigger -->
+                        <button type="button" onclick="toggleProfileMenu()"
+                            class="w-full flex items-center gap-3 px-3 py-3 mt-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+
+                            <!-- Avatar -->
+                            <div class="bg-center bg-no-repeat bg-cover rounded-full size-9 shrink-0"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCUaErqa3eYboyenOnwMQBjQmBcVymkQBLVLPXWgVsuY2IGsk4uDO2zlyjzv_06rQuOQHw0vyP1bo_a3xdbbeI8hIB7lQlsAQ_B1yHHqsrvHVzUAmIPg8FOIlh-fwqhrWcWTMNuyh2fsifs5B7hF1KyRGLZHXnK5Cvhaygooxw9eu_54fMbFyKh-2cKmtMx1mWPk0RPvwATEAfWlqb98HkVl2SdlhWP8jO6G2cuYbM52LBwJ8FJloPGBKbYg1R3fhWuBa5VlYk8Wm4");'>
+                            </div>
+
+                            <!-- User info -->
+                            <div class="flex flex-col text-left overflow-hidden">
+                                <span class="text-sm font-semibold text-slate-900 dark:text-white truncate">
+                                    {{ request.user.name }} ({{ request.user.groups.0|title|default:"Customer" }})
+                                </span>
+                                <span class="text-xs text-slate-500 dark:text-slate-400 truncate">
+                                    {{ request.user.email }}
+                                </span>
+                            </div>
+
+                            <!-- Chevron -->
+                            <span class="material-symbols-outlined ml-auto text-slate-400">
+                                expand_more
+                            </span>
+                        </button>
+
+                        <!-- 🔥 Dropdown opens UP (not down) -->
+                        <div id="profileMenu"
+                            class="absolute bottom-full mb-2 right-0 w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl hidden z-50">
+
+                            <a href="{% url 'logout' %}"
+                                class="flex items-center gap-2 px-4 py-3 text-sm text-red-600 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition">
+                                <span class="material-symbols-outlined text-[18px]">logout</span>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                    <script>
+                        function toggleProfileMenu() {
+                            document.getElementById('profileMenu').classList.toggle('hidden');
+                        }
+
+                        document.addEventListener('click', function (e) {
+                            const wrapper = document.getElementById('profileMenuWrapper');
+                            const menu = document.getElementById('profileMenu');
+
+                            if (!wrapper.contains(e.target)) {
+                                menu.classList.add('hidden');
+                            }
+                        });
+                    </script>
+
+                </div>
+            </aside>
+            {% if show_section == 'duplicate_popup' %}
+            <!-- Popup Modal -->
+            <div class="fixed inset-0 bg-black/50 flex justify-center items-center z-50" id="duplicateComplaintModal">
+                <div class="bg-white dark:bg-slate-800 rounded-lg shadow-lg max-w-lg w-full p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h5 class="text-lg font-semibold text-slate-900 dark:text-white">Duplicate Complaint Detected
+                        </h5>
+                        <button type="button" class="text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                            data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+                            <span class="material-symbols-outlined">close</span>
+                        </button>
+                    </div>
+                    <div class="modal-body mb-4">
+                        <p class="text-sm text-slate-600 dark:text-slate-300">Please select one of the following options
+                            to perform on existing ticket:</p>
+                    </div>
+                    <div class="flex justify-center gap-4 mt-4">
+                        <button type="button"
+                            class="btn btn-danger bg-red-600 text-white hover:bg-red-700 rounded-lg py-2 px-6"
+                            id="escalateComplaint">
+                            Escalate Original ticket
+                        </button>
+                        <button type="button"
+                            class="btn btn-info bg-blue-600 text-white hover:bg-blue-700 rounded-lg py-2 px-6"
+                            id="openOldComplaint">
+                            Track Original ticket
+                        </button>
+                    </div>
+                    <!-- Close and Register New Complaint Button -->
+                    <div class="mt-4 flex justify-center">
+                        <form method="POST"
+                            action="{% url 'close_and_register_new_complaint' old_complaint_id=oldCompID %}">
+                            {% csrf_token %}
+                            <button type="submit"
+                                class="bg-yellow-600 text-white hover:bg-yellow-700 py-2 px-6 rounded-lg">
+                                Close Ticket & Create New
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Include jQuery -->
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+            <!-- Include Bootstrap JS (if you're using Bootstrap for modals) -->
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+            <script>
+                // Show the modal when this section is displayed
+                $(document).ready(function () {
+                    console.log("Showing modal for duplicate complaint");
+                    // Display the modal
+                    $('#duplicateComplaintModal').removeClass('hidden').addClass('flex');
+
+                    // Handle button clicks
+                    $('#escalateComplaint').click(function () {
+                        window.location.href = "{% url 'escalate_complaint' complaint_id=oldCompID %}";
+                    });
+
+                    $('#openOldComplaint').click(function () {
+                        window.location.href = "{% url 'track_complaint_detail' complaint_id=oldCompID %}";
+                    });
+                });
+
+                // Function to close modal
+                function closeModal() {
+                    $('#duplicateComplaintModal').addClass('hidden');
+                }
+            </script>
+            {% elif show_section == 'input_popup' %}
+            <!-- Input Correction Popup -->
+            <div class="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+                <div class="bg-white dark:bg-slate-800 rounded-lg shadow-lg max-w-lg w-full p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h5 class="text-lg font-semibold text-slate-900 dark:text-white">Action Required</h5>
+                        <!-- If you want a close button that goes back or cancels -->
+                        <a href="{% url 'register_complaint' %}"
+                            class="text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                            <span class="material-symbols-outlined">close</span>
+                        </a>
+                    </div>
+                    <div class="modal-body mb-4">
+                        {% if missing_field %}
+                        <p class="text-red-500 font-medium">Missing Information: {{ missing_field }}</p>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">We could not detect a valid
+                            {{missing_field }} in your description. Please edit your description to include it.</p>
+                        {% elif error_message %}
+                        <p class="text-red-500 font-medium">Verification Failed</p>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">{{ error_message }}</p>
+                        {% endif %}
+
+                        <!-- Description Display -->
+                        <div
+                            class="mt-4 p-3 bg-slate-50 dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-700">
+                            <p class="text-xs text-slate-500 uppercase font-bold mb-1">Your Description</p>
+                            <p class="text-sm text-slate-700 dark:text-slate-300 italic">"{{ description_so_far }}"</p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center gap-4 mt-6">
+                        <a href="{% url 'register_complaint' %}"
+                            class="bg-primary text-white hover:bg-blue-600 py-2 px-6 rounded-lg font-medium">
+                            Go Back & Edit
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% elif category == 'Insurance Claim' and insurance_claim_id %}
+            <!-- Insurance Claim Confirmation Screen -->
+            <main class="flex-1 flex justify-center py-8 px-6 lg:px-12 bg-background-light dark:bg-background-dark">
+                <div class="flex flex-col w-full max-w-[1200px] gap-8">
+                    <!-- Dashboard Grid -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Left Column (Results & Timeline) -->
+                        <div class="lg:col-span-2 flex flex-col gap-6">
+                            <!-- Result Status Card -->
+                            <div
+                                class="flex flex-col md:flex-row items-stretch justify-between gap-6 rounded-xl bg-white dark:bg-[#1e293b] p-6 shadow-sm border border-green-100 dark:border-green-900/30 overflow-hidden relative">
+                                <!-- Decorative bg -->
+                                <div
+                                    class="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-bl-full -mr-8 -mt-8 pointer-events-none">
+                                </div>
+                                <div class="flex flex-col gap-4 relative z-10 flex-1">
+                                    <div class="flex items-center gap-3 mb-1">
+                                        <div
+                                            class="flex items-center justify-center size-10 rounded-full bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400">
+                                            <span class="material-symbols-outlined">check_circle</span>
+                                        </div>
+                                        <span
+                                            class="text-green-700 dark:text-green-400 font-bold text-sm uppercase tracking-wider">Eligible
+                                            for Claim</span>
+                                    </div>
+                                    <div class="flex flex-col gap-2">
+                                        <h3 class="text-[#111418] dark:text-white text-xl font-bold leading-tight">Claim
+                                            Auto-Submitted Successfully</h3>
+                                        <p
+                                            class="text-[#617589] dark:text-gray-300 text-base font-normal leading-relaxed">
+                                            Great news! Your complaint details qualify for an automatic claim based on
+                                            your
+                                            active policy. We have initiated the claim
+                                            process.
+                                        </p>
+                                    </div>
+                                    <div
+                                        class="mt-2 p-4 bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800 rounded-lg flex gap-3 items-start">
+                                        <span class="material-symbols-outlined text-primary mt-0.5">auto_awesome</span>
+                                        <div>
+                                            <p class="text-sm font-bold text-gray-900 dark:text-gray-100 mb-1">AI
+                                                Analysis
+                                                Insight</p>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                                                {{ resolution_text }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Timeline Card -->
+                            <div
+                                class="rounded-xl bg-white dark:bg-[#1e293b] p-6 shadow-sm border border-[#e5e7eb] dark:border-gray-800">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h3 class="text-[#111418] dark:text-white text-lg font-bold">Claim Progress</h3>
+                                    <span class="text-sm text-[#617589] dark:text-gray-400">Estimated completion: 24hrs
+                                    </span>
+                                </div>
+                                <div class="grid grid-cols-[40px_1fr] gap-x-2 px-2">
+                                    <!-- Step 1: Done -->
+                                    <div class="flex flex-col items-center gap-1 pt-1">
+                                        <div
+                                            class="flex items-center justify-center size-8 rounded-full bg-primary text-white">
+                                            <span class="material-symbols-outlined text-[18px]">check</span>
+                                        </div>
+                                        <div class="w-[2px] bg-primary h-full grow min-h-[40px]"></div>
+                                    </div>
+                                    <div class="flex flex-1 flex-col pt-1 pb-8">
+                                        <p
+                                            class="text-[#111418] dark:text-white text-base font-semibold leading-normal">
+                                            Complaint Logged</p>
+                                        <p class="text-sm text-[#617589] dark:text-gray-400">Complaint #{{ complaint_id  }} received via Web Portal.</p>
+                                    </div>
+                                    <!-- Step 2: Done -->
+                                    <div class="flex flex-col items-center gap-1">
+                                        <div class="w-[2px] bg-primary h-4"></div>
+                                        <div
+                                            class="flex items-center justify-center size-8 rounded-full bg-primary text-white">
+                                            <span class="material-symbols-outlined text-[18px]">smart_toy</span>
+                                        </div>
+                                        <div class="w-[2px] bg-primary h-full grow min-h-[40px]"></div>
+                                    </div>
+                                    <div class="flex flex-1 flex-col pt-1 pb-8">
+                                        <p
+                                            class="text-[#111418] dark:text-white text-base font-semibold leading-normal">
+                                            AI
+                                            Analysis Complete</p>
+                                        <p class="text-sm text-[#617589] dark:text-gray-400">Eligibility verified
+                                            against Active Policy.</p>
+                                    </div>
+                                    <!-- Step 3: Current -->
+                                    <div class="flex flex-col items-center gap-1">
+                                        <div class="w-[2px] bg-primary h-4"></div>
+                                        <div
+                                            class="flex items-center justify-center size-8 rounded-full bg-white dark:bg-gray-800 border-2 border-primary text-primary relative z-10">
+                                            <span class="material-symbols-outlined text-[18px]">edit_document</span>
+                                        </div>
+                                        <div class="w-[2px] bg-[#e5e7eb] dark:bg-gray-700 h-full grow min-h-[40px]">
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-1 flex-col pt-1 pb-8">
+                                        <p
+                                            class="text-[#111418] dark:text-white text-base font-semibold leading-normal">
+                                            Claim Created ({{ insurance_claim_id|default:complaint_id }})</p>
+                                        <p class="text-sm text-[#617589] dark:text-gray-400">Claim has been initialized and assigned to an adjuster.</p>
+                                    </div>
+                                    <!-- Step 4: Pending or Estimated -->
+                                    <div class="flex flex-col items-center gap-1 pb-2">
+                                        <div class="w-[2px] bg-[#e5e7eb] dark:bg-gray-700 h-4"></div>
+                                        <div
+                                            class="flex items-center justify-center size-8 rounded-full {% if payout_amount and payout_amount != '10.00' %}bg-primary text-white{% else %}bg-[#f0f2f4] dark:bg-gray-700 text-[#9ca3af]{% endif %}">
+                                            <span class="material-symbols-outlined text-[18px]">payments</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-1 flex-col pt-1 pb-2">
+                                        <p
+                                            class="{% if payout_amount and payout_amount != '10.00' %}text-[#111418] dark:text-white font-semibold{% else %}text-[#9ca3af] dark:text-gray-500 font-medium{% endif %} text-base leading-normal">
+                                            Payout {% if payout_amount and payout_amount != '10.00' %}Estimated: ${{  payout_amount }}{% else %}Approval{% endif %}</p>
+                                        <p
+                                            class="text-sm {% if payout_amount and payout_amount != '10.00' %}text-primary font-bold{% else %}text-[#9ca3af] dark:text-gray-600{% endif %}">
+                                            {% if payout_amount and payout_amount != '10.00' %}AI Adjustment applied.{% else %}Pending final review.{% endif %}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Right Column (Details & Actions) -->
+                        <div class="lg:col-span-1 flex flex-col gap-6">
+                            <!-- Claim ID Card -->
+                            <div
+                                class="rounded-xl bg-white dark:bg-[#1e293b] p-6 shadow-sm border border-[#e5e7eb] dark:border-gray-800 flex flex-col items-center text-center gap-4">
+                                <div
+                                    class="size-12 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-primary mb-1">
+                                    <span class="material-symbols-outlined text-3xl">badge</span>
+                                </div>
+                                <div>
+                                    <p
+                                        class="text-sm font-medium text-[#617589] dark:text-gray-400 uppercase tracking-wide">
+                                        Claim Reference ID</p>
+                                    <p class="text-2xl font-black text-[#111418] dark:text-white tracking-tight mt-1">
+                                        {{ insurance_claim_id|default:complaint_id }}</p>
+                                </div>
+                                {% if insurance_txn_id %}
+                                <a href="{% url 'transaction_detail' transaction_id=insurance_txn_id %}"
+                                    class="flex w-full items-center justify-center gap-2 rounded-lg bg-primary h-10 px-4 text-white text-sm font-semibold hover:bg-blue-600 transition-colors group">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                    <span>Check Status</span>
+                                </a>
+                                {% endif %}
+                            </div>
+                            <!-- AI Estimation Summary Card (Visible if adjustment happened) -->
+                            {% if payout_amount and payout_amount != '10.00' %}
+                            <div
+                                class="rounded-xl bg-gradient-to-br from-indigo-600 to-blue-700 p-6 shadow-lg shadow-blue-500/20 text-white flex flex-col gap-4 relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-8 -mt-8">
+                                </div>
+
+                                <div class="flex items-center gap-3">
+                                    <div class="size-10 rounded-full bg-white/20 flex items-center justify-center">
+                                        <span class="material-symbols-outlined">auto_awesome</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-bold uppercase tracking-widest opacity-80">AI
+                                            Adjuster Estimate</p>
+                                        <h4 class="text-lg font-black tracking-tight">Financial Summary</h4>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-3 pt-2">
+                                    <div class="flex justify-between items-center text-sm">
+                                        <span class="opacity-70">Damage Severity:</span>
+                                        <span class="font-bold">Moderate-Severe</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-sm">
+                                        <span class="opacity-70">Payout Amount:</span>
+                                        <span class="font-black text-xl">${{ payout_amount }}</span>
+                                    </div>
+                                    <div class="pt-3 border-t border-white/10">
+                                        <p class="text-[11px] leading-relaxed opacity-70">This amount has been logged in
+                                            your transactions and is awaiting final release by an agent.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- Original Complaint Summary -->
+                            <div
+                                class="rounded-xl bg-white dark:bg-[#1e293b] p-6 shadow-sm border border-[#e5e7eb] dark:border-gray-800">
+                                <h4
+                                    class="text-[#111418] dark:text-white text-sm font-bold mb-3 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-gray-400 text-[18px]">history_edu</span>
+                                    Original Complaint
+                                </h4>
+                                <div
+                                    class="bg-[#f8fafc] dark:bg-[#111418] p-4 rounded-lg border border-gray-100 dark:border-gray-800 mb-4">
+                                    <p
+                                        class="text-sm text-[#617589] dark:text-gray-400 italic leading-relaxed line-clamp-4">
+                                        "{{ description }}"
+                                    </p>
+                                </div>
+                                <a class="text-primary text-sm font-medium hover:underline flex items-center gap-1"
+                                    href="#">
+                                    View full complaint text
+                                    <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                                </a>
+                            </div>
+                            <!-- Help & Support -->
+                            <div
+                                class="rounded-xl bg-white dark:bg-[#1e293b] p-6 shadow-sm border border-[#e5e7eb] dark:border-gray-800">
+                                <h4 class="text-[#111418] dark:text-white text-sm font-bold mb-4">Need Assistance?</h4>
+                                <div class="flex flex-col gap-3">
+                                    <button
+                                        class="flex items-center gap-3 w-full p-3 rounded-lg border border-[#e5e7eb] dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all text-left group">
+                                        <div
+                                            class="size-8 rounded-full bg-blue-50 dark:bg-gray-700 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                                            <span class="material-symbols-outlined text-[18px]">upload_file</span>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-semibold text-[#111418] dark:text-gray-200">Upload
+                                                Evidence
+                                            </p>
+                                            <p class="text-xs text-[#617589] dark:text-gray-500">Add photos/videos</p>
+                                        </div>
+                                    </button>
+                                    <button
+                                        class="flex items-center gap-3 w-full p-3 rounded-lg border border-[#e5e7eb] dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all text-left group">
+                                        <div
+                                            class="size-8 rounded-full bg-blue-50 dark:bg-gray-700 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                                            <span class="material-symbols-outlined text-[18px]">support_agent</span>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-semibold text-[#111418] dark:text-gray-200">Contact
+                                                Agent</p>
+                                            <p class="text-xs text-[#617589] dark:text-gray-500">Talk to a human</p>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            {% else %}
+
+
+            <!-- Main Content Area -->
+            <main class="flex-1 flex justify-center py-8 px-6 lg:px-12 bg-background-light dark:bg-background-dark">
+                <div class="flex flex-col w-full max-w-[960px] gap-8">
+                    <!-- Page Heading / Status -->
+                    <div class="flex flex-col gap-2">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="flex items-center justify-center size-8 rounded-full bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400">
+                                <span class="material-symbols-outlined text-lg">check</span>
+                            </div>
+                            <span class="text-sm font-medium text-green-600 dark:text-green-400">Ticket
+                                #{{complaint_id}} Successfully Created</span>
+                        </div>
+                        <h1
+                            class="text-[#111418] dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">
+                            We've analyzed your complaint</h1>
+                        <p class="text-[#617589] dark:text-gray-400 text-base font-normal leading-normal max-w-2xl">We
+                            have reviewed the details of your "{{category}}" report and identified a potential immediate
+                            solution.</p>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Left Column: AI Resolution (2/3 width)-->
+                        <div class="lg:col-span-2 flex flex-col gap-6">
+                            <!-- AI Card -->
+                            <div
+                                class="relative flex flex-col overflow-hidden rounded-xl border border-primary/20 bg-white dark:bg-[#151c24] shadow-sm">
+                                <!-- AI Badge Header -->
+                                <div
+                                    class="flex items-center justify-between gap-3 border-b border-[#f0f2f4] dark:border-gray-800 bg-primary/5 px-6 py-4">
+                                    <div class="flex items-center gap-2 text-primary">
+                                        <span class="material-symbols-outlined text-[20px] fill">smart_toy</span>
+                                        <span class="text-sm font-bold tracking-wide uppercase">AI Suggested
+                                            Resolution</span>
+                                    </div>
+                                    <div class="flex gap-1">
+                                        <span class="flex size-2 rounded-full bg-primary animate-pulse"></span>
+                                    </div>
+                                </div>
+                                <!-- AI Content -->
+                                <div class="p-6 md:p-8">
+                                    <div class="prose dark:prose-invert max-w-none">
+                                        <h3 class="text-xl font-bold text-[#111418] dark:text-white mb-4">
+                                            {{ subject }}
+                                        </h3>
+                                        <div
+                                            class="text-[#4e5d6d] dark:text-gray-300 leading-relaxed mb-6 whitespace-pre-line">
+                                            {{resolution_text}}
+                                        </div>
+                                        <p class="text-xs text-[#9aa6ac] italic">Disclaimer: This response is generated
+                                            by AI based on similar resolved cases.</p>
+                                    </div>
+                                </div>
+                                <!-- Feedback Footer -->
+                                <div
+                                    class="flex items-center justify-between border-t border-[#f0f2f4] dark:border-gray-800 bg-[#fafafa] dark:bg-[#151c24] px-6 py-3">
+                                    <span class="text-sm font-medium text-[#617589]">Was this suggestion helpful?</span>
+                                    <div class="flex gap-2">
+                                        <button id="btn-yes" onclick="handleFeedback('yes')"
+                                            class="group flex items-center gap-1.5 rounded-full border border-[#e5e7eb] dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-1.5 text-sm font-medium text-[#617589] hover:border-primary hover:text-primary transition-all">
+                                            <span class="material-symbols-outlined text-[18px]">thumb_up</span>
+                                            <span class="hidden sm:inline">Yes</span>
+                                        </button>
+                                        <button id="btn-no" onclick="handleFeedback('no')"
+                                            class="group flex items-center gap-1.5 rounded-full border border-[#e5e7eb] dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-1.5 text-sm font-medium text-[#617589] hover:border-red-500 hover:text-red-500 transition-all">
+                                            <span class="material-symbols-outlined text-[18px]">thumb_down</span>
+                                            <span class="hidden sm:inline">No</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Actions -->
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <button
+                                    class="flex-1 flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-4 text-white shadow-md hover:bg-blue-600 transition-colors">
+                                    <span class="material-symbols-outlined">check_circle</span>
+                                    <a href="{% url 'close_complaint' old_complaint_id=complaint_id %}"><span
+                                            class="font-bold">This Solved My Problem</span></a>
+                                </button>
+                                <a href="{% url 'track_complaint_detail' complaint_id=complaint_id %}"
+                                    class="flex-1 flex items-center justify-center gap-2 rounded-xl border border-[#e5e7eb] dark:border-gray-700 bg-white dark:bg-[#151c24] px-6 py-4 text-[#111418] dark:text-white shadow-sm hover:bg-[#f0f2f4] dark:hover:bg-gray-800 transition-colors">
+                                    <span class="material-symbols-outlined text-[20px] text-primary">visibility</span>
+                                    <span class="font-bold">Track Status</span>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Right Column: Context/Details (1/3 width) -->
+                        <div class="lg:col-span-1">
+                            <div class="sticky top-24 flex flex-col gap-6">
+                                <!-- Ticket Summary Card -->
+                                <div
+                                    class="rounded-xl border border-[#e5e7eb] dark:border-gray-800 bg-white dark:bg-[#151c24] p-5 shadow-sm">
+                                    <h3
+                                        class="text-[#111418] dark:text-white text-base font-bold mb-4 border-b border-[#f0f2f4] dark:border-gray-800 pb-2">
+                                        Ticket Summary</h3>
+                                    <div class="space-y-4">
+                                        <div class="flex justify-between gap-4">
+                                            <span
+                                                class="text-[#617589] dark:text-gray-400 text-xs uppercase font-medium tracking-wide">Subject</span>
+                                            <span
+                                                class="text-[#111418] dark:text-white text-sm font-medium text-right">{{subject}}</span>
+                                        </div>
+                                        <div class="flex justify-between gap-4">
+                                            <span
+                                                class="text-[#617589] dark:text-gray-400 text-xs uppercase font-medium tracking-wide">Category</span>
+                                            <span class="text-[#111418] dark:text-white text-sm font-medium text-right">
+                                                {{category}}</span>
+                                        </div>
+                                        <div class="flex justify-between gap-4">
+                                            <span
+                                                class="text-[#617589] dark:text-gray-400 text-xs uppercase font-medium tracking-wide">Submitted</span>
+                                            <span class="text-[#111418] dark:text-white text-sm font-medium text-right">
+                                                {{submitted}}</span>
+                                        </div>
+                                        <div class="flex justify-between gap-4">
+                                            <span
+                                                class="text-[#617589] dark:text-gray-400 text-xs uppercase font-medium tracking-wide">Assigned
+                                                Support</span>
+                                            <div class="text-right">
+                                                <span
+                                                    class="block text-[#111418] dark:text-white text-sm font-medium">{{assigned_to}}</span>
+                                                <span
+                                                    class="block text-[#617589] dark:text-gray-400 text-xs">{{assigned_team}}</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="mt-6 pt-4 border-t border-[#f0f2f4] dark:border-gray-800">
+                                        <span
+                                            class="block text-[#617589] dark:text-gray-400 text-xs uppercase font-medium tracking-wide mb-2">Description</span>
+                                        <p
+                                            class="text-sm text-[#4e5d6d] dark:text-gray-300 leading-normal bg-[#f8fafc] dark:bg-[#11161d] p-3 rounded-lg border border-[#e5e7eb] dark:border-gray-800">
+                                            {{description|truncatewords:15}}
+                                        </p>
+                                    </div>
+                                </div>
+                                <!-- Helper Link -->
+                                <!--div
+                                    class="rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 p-5 text-white shadow-md relative overflow-hidden group">
+                                    <div
+                                        class="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-white/10 group-hover:scale-150 transition-transform duration-500">
+                                    </div>
+                                    <h4 class="relative z-10 text-lg font-bold mb-1">Live Chat</h4>
+                                    <p class="relative z-10 text-blue-100 text-sm mb-3">Wait time: &lt; 2 mins</p>
+                                    <button
+                                        class="relative z-10 flex items-center gap-2 text-sm font-bold bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg transition-colors">
+                                        Start Chat <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                                    </button>
+                                </div-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    {% endif %}
+
+    <script>
+        function handleFeedback(type) {
+            const yesBtn = document.getElementById('btn-yes');
+            const noBtn = document.getElementById('btn-no');
+
+            // Reset classes using !important tailwind variants to override defaults
+            yesBtn.classList.remove('!bg-green-500', '!text-white', '!border-green-600');
+            noBtn.classList.remove('!bg-red-500', '!text-white', '!border-red-600');
+
+            if (type === 'yes') {
+                yesBtn.classList.add('!bg-green-500', '!text-white', '!border-green-600');
+            } else if (type === 'no') {
+                noBtn.classList.add('!bg-red-500', '!text-white', '!border-red-600');
+            }
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>My Transactions</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-[#111418] dark:text-white font-display">
+    <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+        <div class="flex flex-1">
+            <!-- Sidebar -->
+            <aside
+                class="hidden lg:flex flex-col w-72 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shrink-0 h-screen sticky top-0 overflow-y-auto z-20">
+                <div class="flex items-center gap-3 px-6 py-6 border-b border-slate-100 dark:border-slate-800">
+                    <div class="bg-primary/10 flex items-center justify-center rounded-lg size-10 text-primary">
+                        <span class="material-symbols-outlined text-2xl">token</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <h1 class="text-slate-900 dark:text-white text-base font-bold leading-tight">CompResolve</h1>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs font-normal">Transactions</p>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2 p-4">
+                    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+                        href="{% url 'user_home' %}">
+                        <span class="material-symbols-outlined text-[20px]">dashboard</span>
+                        <span class="text-sm font-medium">Dashboard</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+                        href="{% url 'track_complaints' %}">
+                        <span class="material-symbols-outlined text-[20px]">confirmation_number</span>
+                        <span class="text-sm font-medium">Tickets</span>
+                    </a>
+                    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                        href="{% url 'user_transactions' %}">
+                        <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+                        <span class="text-sm font-medium">Transactions</span>
+                    </a>
+                </div>
+<div class="mt-auto flex flex-col gap-2 p-4 border-t border-slate-100 dark:border-slate-800">
+                <!-- Profile trigger -->
+                <div class="relative" id="profileMenuWrapper">
+                    <!-- Profile trigger -->
+                    <button type="button" onclick="toggleProfileMenu()"
+                        class="w-full flex items-center gap-3 px-3 py-3 mt-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+
+                        <!-- Avatar -->
+                        <div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border border-slate-200 flex items-center justify-center bg-primary text-white font-bold shrink-0"
+                            data-alt="Profile picture of the user">
+                            {{ request.user.name|capfirst|slice:":1" }}
+                        </div>
+
+                        <!-- User info -->
+                        <div class="flex flex-col text-left overflow-hidden">
+                            <span class="text-sm font-semibold text-slate-900 dark:text-white truncate">
+                                {{ request.user.name|capfirst }} ({{ request.user.groups.0|title|default:"Customer" }})
+                            </span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 truncate">
+                                {{ request.user.email }}
+                            </span>
+                        </div>
+
+                        <!-- Chevron -->
+                        <span class="material-symbols-outlined ml-auto text-slate-400">
+                            expand_more
+                        </span>
+                    </button>
+
+                    <!-- 🔥 Dropdown opens UP (not down) -->
+                    <div id="profileMenu"
+                        class="absolute bottom-full mb-2 right-0 w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl hidden z-50">
+
+                        <a href="{% url 'logout' %}"
+                            class="flex items-center gap-2 px-4 py-3 text-sm text-red-600 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition">
+                            <span class="material-symbols-outlined text-[18px]">logout</span>
+                            Logout
+                        </a>
+                    </div>
+                </div>
+                <script>
+                    function toggleProfileMenu() {
+                        document.getElementById('profileMenu').classList.toggle('hidden');
+                    }
+
+                    document.addEventListener('click', function (e) {
+                        const wrapper = document.getElementById('profileMenuWrapper');
+                        const menu = document.getElementById('profileMenu');
+
+                        if (!wrapper.contains(e.target)) {
+                            menu.classList.add('hidden');
+                        }
+                    });
+                </script>
+
+            </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1 flex flex-col p-6 lg:p-12 gap-8">
+                <div class="flex items-center justify-between">
+                    <h1 class="text-3xl font-black text-[#111418] dark:text-white">My Transactions</h1>
+                    <div class="text-sm text-slate-500">
+                        Manage and track your financial interactions
+                    </div>
+                </div>
+
+                <!-- Transactions Table -->
+                <div
+                    class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr
+                                    class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-xs uppercase tracking-wide text-slate-500">
+                                    <th class="p-4 font-semibold whitespace-nowrap">Transaction ID</th>
+                                    <th class="p-4 font-semibold whitespace-nowrap">Date</th>
+                                    <th class="p-4 font-semibold whitespace-nowrap min-w-[200px]">Description</th>
+                                    <th class="p-4 font-semibold whitespace-nowrap">Amount</th>
+                                    <th class="p-4 font-semibold whitespace-nowrap">Status</th>
+                                    <th class="p-4 font-semibold whitespace-nowrap">Related Claim</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                                {% for txn in transactions %}
+                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+                                    <td class="p-4 font-medium text-slate-900 dark:text-white">
+                                        <div class="flex items-center gap-2">
+                                            <span
+                                                class="material-symbols-outlined text-slate-400 text-lg">receipt</span>
+                                            <a href="{% url 'transaction_detail' transaction_id=txn.TransactionID %}"
+                                                class="text-primary hover:underline font-bold">
+                                                {{ txn.TransactionID }}
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td class="p-4 text-slate-600 dark:text-slate-400 text-sm">
+                                        {{ txn.TransactionDate|slice:":10" }}
+                                    </td>
+                                    <td class="p-4 text-slate-600 dark:text-slate-400 text-sm">
+                                        {{ txn.Description }}
+                                        <div class="text-xs text-slate-400 mt-1">{{ txn.MerchantName }}</div>
+                                    </td>
+                                    <td class="p-4 font-bold text-slate-900 dark:text-white">
+                                        {{ txn.Currency }} {{ txn.TransactionAmount }}
+                                    </td>
+                                    <td class="p-4">
+                                        {% if txn.TransactionStatus == 'Completed' %}
+                                        <span
+                                            class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                                            <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                                            Completed
+                                        </span>
+                                        {% elif txn.TransactionStatus == 'Pending' %}
+                                        <span
+                                            class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+                                            <span class="material-symbols-outlined text-[14px]">hourglass_empty</span>
+                                            Pending
+                                        </span>
+                                        {% elif txn.TransactionStatus == 'Failed' %}
+                                        <span
+                                            class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">
+                                            <span class="material-symbols-outlined text-[14px]">error</span>
+                                            Failed
+                                        </span>
+                                        {% else %}
+                                        <span
+                                            class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-400">
+                                            {{ txn.TransactionStatus }}
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="p-4 text-sm">
+                                        {% if txn.TransactionReferenceNumber %}
+                                        <a href="{% url 'track_complaint_detail' complaint_id=txn.TransactionReferenceNumber %}"
+                                            class="inline-flex items-center gap-1 text-primary hover:underline hover:text-blue-700 transition-colors">
+                                            {{ txn.TransactionReferenceNumber }}
+                                            <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+                                        </a>
+                                        {% else %}
+                                        <span class="text-slate-400">-</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="p-12 text-center">
+                                        <div class="flex flex-col items-center justify-center gap-3">
+                                            <div
+                                                class="size-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400">
+                                                <span class="material-symbols-outlined text-3xl">receipt_long</span>
+                                            </div>
+                                            <p class="text-slate-500 font-medium">No transactions found.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+
+</html>
