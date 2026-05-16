@@ -1,5 +1,25 @@
 version: 0.2
 
+env:
+  variables:
+    # ── Lambda name / ARN ───────────────────────────────────────────────
+    ACCESSIBILITY_LAMBDA: "AccessibilityAccelerator"   # update to your Lambda name or ARN
+
+    # ── S3 bucket where UAT HTML files are stored ───────────────────────
+    HTML_BUCKET:   "assessbility-uat-files"
+    HTML_PREFIX:   "uat-builds/latest/"
+
+    # ── S3 bucket to receive the Excel accessibility report ─────────────
+    REPORT_BUCKET: "accessibility-uat-files"
+    REPORT_PREFIX: "accessibility-reports/"
+
+    # ── S3 location of the TCS_ruleTag.xml rules file ───────────────────
+    RULE_TAG_BUCKET: "assessbility-uat-files"
+    RULE_TAG_KEY:    "config/TCS_ruleTag.xml"
+
+    # ── Minimum passing score (0-100).  Build fails if score < THRESHOLD ─
+    THRESHOLD: "70"
+
 phases:
   install:
     runtime-versions:
@@ -8,6 +28,7 @@ phases:
       - echo "Installing dependencies..."
       - python -m pip install --upgrade pip
       - pip install -r requirements.txt
+      - yum install -y jq
 
   pre_build:
     commands:
@@ -23,7 +44,78 @@ phases:
 
   post_build:
     commands:
-      - echo "Build complete. Packaging artifact..."
+      - echo "=========================================="
+      - echo "   ACCESSIBILITY CHECK — Lambda Invoke"
+      - echo "=========================================="
+
+      # Build the JSON payload for the Lambda
+      - |
+        PAYLOAD=$(jq -n \
+          --arg bucket  "$HTML_BUCKET" \
+          --arg prefix  "$HTML_PREFIX" \
+          --arg rpt_bkt "$REPORT_BUCKET" \
+          --arg rpt_pfx "$REPORT_PREFIX" \
+          --arg xml_bkt "$RULE_TAG_BUCKET" \
+          --arg xml_key "$RULE_TAG_KEY" \
+          --argjson thr  "$THRESHOLD" \
+          '{
+            s3_bucket:       $bucket,
+            s3_prefix:       $prefix,
+            report_bucket:   $rpt_bkt,
+            report_prefix:   $rpt_pfx,
+            rule_tag_bucket: $xml_bkt,
+            rule_tag_key:    $xml_key,
+            threshold:       $thr
+          }')
+        echo "Payload: $PAYLOAD"
+
+      # Invoke the Lambda synchronously and capture the response
+      - |
+        echo "Invoking Lambda: $ACCESSIBILITY_LAMBDA ..."
+        aws lambda invoke \
+          --function-name "$ACCESSIBILITY_LAMBDA" \
+          --invocation-type RequestResponse \
+          --payload "$PAYLOAD" \
+          --cli-binary-format raw-in-base64-out \
+          --log-type Tail \
+          accessibility-result.json
+        echo "--- Lambda response ---"
+        cat accessibility-result.json
+
+      # Parse result fields
+      - |
+        STATUS=$(jq -r '.status  // "ERROR"' accessibility-result.json)
+        SCORE=$(jq -r  '.score   // "0"'    accessibility-result.json)
+        REPORT=$(jq -r '.report_s3_url // "N/A"' accessibility-result.json)
+        MSG=$(jq -r    '.message // ""'     accessibility-result.json)
+
+        echo "Status    : $STATUS"
+        echo "Score     : $SCORE"
+        echo "Report    : $REPORT"
+        echo "Message   : $MSG"
+
+      # Download the Excel report from S3 as a CodeBuild artifact
+      - |
+        REPORT_KEY=$(jq -r '.report_s3_url // ""' accessibility-result.json \
+          | sed 's|s3://[^/]*/||')
+        if [ -n "$REPORT_KEY" ]; then
+          aws s3 cp "s3://${REPORT_BUCKET}/${REPORT_KEY}" Accessibility_UI_Report.xlsx || true
+        fi
+
+      # Gate: fail the build if score is below threshold
+      - |
+        STATUS=$(jq -r '.status // "ERROR"' accessibility-result.json)
+        SCORE=$(jq -r  '.score  // "0"'    accessibility-result.json)
+        if [ "$STATUS" = "FAILED" ]; then
+          echo "❌ Accessibility check FAILED — score $SCORE is below threshold $THRESHOLD."
+          echo "   Fix accessibility issues and re-run the pipeline."
+          exit 1
+        elif [ "$STATUS" = "ERROR" ]; then
+          echo "❌ Accessibility Lambda returned an ERROR — check Lambda logs."
+          exit 1
+        else
+          echo "✅ Accessibility check PASSED — score $SCORE."
+        fi
 
 artifacts:
   files:
@@ -35,4 +127,6 @@ artifacts:
     - .ebextensions/**/*
     - .platform/**/*
     - staticfiles/**/*
+    - accessibility-result.json
+    - Accessibility_UI_Report.xlsx
   discard-paths: no

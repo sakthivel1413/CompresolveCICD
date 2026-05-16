@@ -25,6 +25,7 @@ db.sqlite3-journal
 media/
 staticfiles/
 
+buildspec copy.yml
 # Environment variables — NEVER COMMIT SECRETS
 .env
 .env.*
