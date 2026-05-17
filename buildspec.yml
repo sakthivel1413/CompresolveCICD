@@ -10,7 +10,7 @@ env:
     HTML_PREFIX:   "uat-builds/latest/"
 
     # ── S3 bucket to receive the Excel accessibility report ─────────────
-    REPORT_BUCKET: "accessibility-uat-files"
+    REPORT_BUCKET: "assessbility-uat-files"
     REPORT_PREFIX: "accessibility-reports/"
 
     # ── S3 location of the TCS_ruleTag.xml rules file ───────────────────
