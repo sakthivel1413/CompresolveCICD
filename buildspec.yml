@@ -76,11 +76,10 @@ phases:
           --function-name "$ACCESSIBILITY_LAMBDA" \
           --invocation-type RequestResponse \
           --payload "$PAYLOAD" \
-          --cli-binary-format raw-in-base64-out \
           --log-type Tail \
           accessibility-result.json
         echo "--- Lambda response ---"
-        cat accessibility-result.json
+        cat accessibility-result.json 
 
       # Parse result fields
       - |
