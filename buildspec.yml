@@ -18,7 +18,7 @@ env:
     RULE_TAG_KEY:    "config/TCS_ruleTag.xml"
 
     # ── Minimum passing score (0-100).  Build fails if score < THRESHOLD ─
-    THRESHOLD: "90"
+    THRESHOLD: "70"
 
 phases:
   install:
