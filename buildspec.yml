@@ -16,9 +16,9 @@ env:
     # ── S3 location of the TCS_ruleTag.xml rules file ───────────────────
     RULE_TAG_BUCKET: "assessbility-uat-files"
     RULE_TAG_KEY:    "config/TCS_ruleTag.xml"
-
+  
     # ── Minimum passing score (0-100).  Build fails if score < THRESHOLD ─
-    THRESHOLD: "90"
+    THRESHOLD: "95"
 
 phases:
   install:
@@ -46,7 +46,7 @@ phases:
     commands:
       - echo "=========================================="
       - echo "   ACCESSIBILITY CHECK — Lambda Invoke"
-      - echo "=========================================="
+      - echo "==========================================="
 
       # Build the JSON payload for the Lambda
       - |
